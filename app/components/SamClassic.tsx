@@ -1,12 +1,18 @@
 "use client";
 
 import { useGLTF } from "@react-three/drei";
-import { GroupProps } from "@react-three/fiber";
+import type { ThreeElements } from "@react-three/fiber";
 
-export function SamClassic(props: GroupProps) {
+type SamClassicProps = ThreeElements["group"];
+
+export function SamClassic(props: SamClassicProps) {
   const { scene } = useGLTF("/models/sam-classic.glb");
 
-  return <primitive object={scene} {...props} />;
+  return (
+    <group {...props}>
+      <primitive object={scene} />
+    </group>
+  );
 }
 
 useGLTF.preload("/models/sam-classic.glb");
