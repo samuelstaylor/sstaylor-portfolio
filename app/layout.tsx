@@ -32,12 +32,10 @@ export default function RootLayout({
     "/contact": [0, 2.5, 3],
   };
 
-  // State to control target camera position
   const [cameraPosition, setCameraPosition] = useState<
     [number, number, number]
   >([0, 5, 4]);
 
-  // Update camera target when pathname changes
   useEffect(() => {
     setCameraPosition(cameraMap[pathname] || [0, 5, 4]);
   }, [pathname]);
@@ -48,7 +46,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative w-screen h-screen overflow-hidden`}
       >
         {/* Persistent 3D Scene */}
-        <Scene cameraPosition={cameraPosition} />
+        <Scene cameraPosition={cameraPosition} isHome={pathname === "/"} />
 
         {/* Overlay content */}
         <div className="absolute inset-0 z-10 flex flex-col">
