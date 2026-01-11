@@ -1,38 +1,54 @@
 "use client";
 
 import { useGLTF, useFBX, useAnimations } from "@react-three/drei";
-import { useEffect, useRef } from "react";
 import type { ThreeElements } from "@react-three/fiber";
-import { Group } from "three";
+import { useRef, useEffect } from "react";
+import * as THREE from "three";
 
 type SamClassicProps = ThreeElements["group"];
 
 export function SamClassic(props: SamClassicProps) {
-  const group = useRef<Group>(null);
+  const group = useRef<THREE.Group>(null);
 
-  // Load the mesh
+  // Model
   const { scene } = useGLTF("/models/sam-classic.glb");
 
-  // Load the Mixamo waving animation
+  // Animation
   const fbx = useFBX("/animation/Waving.fbx");
-
-  // Hook to play animation
   const { actions } = useAnimations(fbx.animations, group);
 
   useEffect(() => {
-    if (!actions) return;
+    if (!group.current || !actions) return;
 
-    // Play the first animation (Mixamo waving)
+    /* ------------------------------
+       1. FIX FLOOR CLIPPING
+    --------------------------------*/
+    const box = new THREE.Box3().setFromObject(scene);
+    const minY = box.min.y;
+
+    // Lift model so feet sit exactly on ground (y = 0)
+    scene.position.y -= minY;
+
+    /* ------------------------------
+       2. PLAY ANIMATION IMMEDIATELY
+    --------------------------------*/
     const wave = Object.values(actions)[0];
-    wave?.reset().fadeIn(0.5).play();
-
-    return () => {
-      wave?.fadeOut(0.5);
-    };
-  }, [actions]);
+    if (wave) {
+      wave.reset();
+      wave.clampWhenFinished = true;
+      wave.setLoop(THREE.LoopRepeat, Infinity);
+      wave.play();
+    }
+  }, [actions, scene]);
 
   return (
-    <group ref={group} {...props} position={[1.2, 0, 0]} scale={1}>
+    <group
+      ref={group}
+      position={[1.2, 0, 0]}
+      rotation={[0, -0.3, 0]}
+      scale={1}
+      {...props}
+    >
       <primitive object={scene} />
     </group>
   );
