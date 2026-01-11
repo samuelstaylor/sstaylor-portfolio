@@ -10,23 +10,26 @@ interface Props {
 }
 
 export default function AtomiumViewer({ cameraPosition }: Props) {
+  // Explicitly type positions as tuples
+  const spherePositions: [number, number, number][] = [
+    [0, 0, 0],
+    [2, 0, 0],
+    [-2, 0, 0],
+    [0, 2, 0],
+    [0, -2, 0],
+    [1.5, 1.5, 0],
+    [-1.5, 1.5, 0],
+    [-1.5, -1.5, 0],
+    [1.5, -1.5, 0],
+  ];
+
   return (
     <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
 
-      {/* Example Atomium model: 9 spheres for now */}
-      {[
-        [0, 0, 0],
-        [2, 0, 0],
-        [-2, 0, 0],
-        [0, 2, 0],
-        [0, -2, 0],
-        [1.5, 1.5, 0],
-        [-1.5, 1.5, 0],
-        [-1.5, -1.5, 0],
-        [1.5, -1.5, 0],
-      ].map((pos, i) => (
+      {/* Atomium spheres */}
+      {spherePositions.map((pos, i) => (
         <mesh key={i} position={pos}>
           <sphereGeometry args={[0.3, 32, 32]} />
           <meshStandardMaterial color="orange" />
