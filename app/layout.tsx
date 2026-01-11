@@ -22,7 +22,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
 
-  // Closer, higher camera positions for a more dramatic view
   const cameraMap: Record<string, [number, number, number]> = {
     "/": [0, 2, 4],
     "/research": [3, 3, 3],
@@ -45,10 +44,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative w-screen h-screen overflow-hidden`}
       >
-        {/* Persistent 3D Scene */}
-        <Scene cameraPosition={cameraPosition} isHome={pathname === "/"} />
+        <Scene
+          cameraPosition={cameraPosition}
+          isHome={pathname === "/"}
+          isResearch={pathname === "/research"}
+          isEducation={pathname === "/education"}
+        />
 
-        {/* Overlay content */}
         <div className="absolute inset-0 z-10 flex flex-col">
           <Navbar />
           <main className="flex-1">{children}</main>

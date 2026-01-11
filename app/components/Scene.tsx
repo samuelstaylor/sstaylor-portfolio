@@ -5,14 +5,24 @@ import { Suspense, useRef, useEffect } from "react";
 import { Atomium } from "./Atomium";
 import { Vector3 } from "three";
 import { Environment } from "@react-three/drei";
+
 import { SamClassic } from "./SamClassic";
+import { SamBusiness } from "./SamBusiness";
+import { SamScientist } from "./SamScientist";
 
 type SceneProps = {
   cameraPosition: [number, number, number];
   isHome: boolean;
+  isResearch: boolean;
+  isEducation: boolean;
 };
 
-export default function Scene({ cameraPosition, isHome }: SceneProps) {
+export default function Scene({
+  cameraPosition,
+  isHome,
+  isResearch,
+  isEducation,
+}: SceneProps) {
   return (
     <Canvas
       shadows
@@ -39,7 +49,7 @@ export default function Scene({ cameraPosition, isHome }: SceneProps) {
       <AnimatedCamera target={cameraPosition} />
 
       {/* Ground */}
-      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[5, 5]} />
         <meshStandardMaterial
           color="#2a2a2a"
@@ -51,13 +61,15 @@ export default function Scene({ cameraPosition, isHome }: SceneProps) {
       {/* Models */}
       <Suspense fallback={null}>
         <Atomium />
+
         {isHome && <SamClassic />}
+        {isResearch && <SamScientist />}
+        {isEducation && <SamBusiness />}
       </Suspense>
     </Canvas>
   );
 }
 
-/* ---------- Camera Animation ---------- */
 function AnimatedCamera({ target }: { target: [number, number, number] }) {
   const currentTarget = useRef(new Vector3(...target));
 

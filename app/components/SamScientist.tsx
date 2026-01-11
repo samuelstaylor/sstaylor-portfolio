@@ -5,13 +5,13 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamClassicProps = ThreeElements["group"];
+type SamScientistProps = ThreeElements["group"];
 
-export function SamClassic(props: SamClassicProps) {
+export function SamScientist(props: SamScientistProps) {
   const group = useRef<THREE.Group>(null);
 
-  const { scene } = useGLTF("/models/sam-classic.glb");
-  const fbx = useFBX("/animation/Waving.fbx");
+  const { scene } = useGLTF("/models/sam-scientist.glb");
+  const fbx = useFBX("/animation/Research.fbx");
   const { actions } = useAnimations(fbx.animations, group);
 
   useEffect(() => {
@@ -41,4 +41,4 @@ export function SamClassic(props: SamClassicProps) {
   );
 }
 
-useGLTF.preload("/models/sam-classic.glb");
+useGLTF.preload("/models/sam-scientist.glb");
