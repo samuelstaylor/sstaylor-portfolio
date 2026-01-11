@@ -22,24 +22,24 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
 
-  // Map each "page" to a camera position
+  // Closer, higher camera positions for a more dramatic view
   const cameraMap: Record<string, [number, number, number]> = {
-    "/": [0, 3, 10],
-    "/research": [5, 0, 8],
-    "/education": [8, 3, 5],
-    "/projects": [0, 5, 12],
-    "/music": [-5, 3, 8],
-    "/contact": [0, 8, 5],
+    "/": [0, 2, 4],
+    "/research": [3, 3, 3],
+    "/education": [4, 2, 3],
+    "/projects": [0, 3, 5],
+    "/music": [-3, 2, 3],
+    "/contact": [0, 2.5, 3],
   };
 
   // State to control target camera position
   const [cameraPosition, setCameraPosition] = useState<
     [number, number, number]
-  >([0, 3, 10]);
+  >([0, 5, 4]);
 
   // Update camera target when pathname changes
   useEffect(() => {
-    setCameraPosition(cameraMap[pathname] || [0, 3, 10]);
+    setCameraPosition(cameraMap[pathname] || [0, 5, 4]);
   }, [pathname]);
 
   return (
