@@ -1,0 +1,6 @@
+process:
+1. import .glb into blender
+2. delete root armature
+3. delete glb no export (two spheres) collection
+4. explort as fbx
+5. upload for animations

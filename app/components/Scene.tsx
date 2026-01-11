@@ -5,29 +5,13 @@ import { Suspense, useRef, useEffect } from "react";
 import { Atomium } from "./Atomium";
 import { Vector3 } from "three";
 import { Environment } from "@react-three/drei";
-import { useGLTF } from "@react-three/drei";
+import { SamClassic } from "./SamClassic";
 
 type SceneProps = {
   cameraPosition: [number, number, number];
   isHome: boolean;
 };
 
-/* ---------- Sam Model ---------- */
-function SamClassic() {
-  const { scene } = useGLTF("/models/sam-classic.glb");
-
-  return (
-    <primitive
-      object={scene}
-      position={[1.2, 0, 0]} // slightly beside Atomium
-      scale={1}
-    />
-  );
-}
-
-useGLTF.preload("/models/sam-classic.glb");
-
-/* ---------- Scene ---------- */
 export default function Scene({ cameraPosition, isHome }: SceneProps) {
   return (
     <Canvas
