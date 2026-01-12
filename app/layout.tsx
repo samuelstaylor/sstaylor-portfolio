@@ -49,6 +49,8 @@ export default function RootLayout({
           isHome={pathname === "/"}
           isResearch={pathname === "/research"}
           isEducation={pathname === "/education"}
+          isMusic={pathname === "/music"}
+          isProjects={pathname === "/projects"}
         />
 
         <div className="absolute inset-0 z-10 flex flex-col">

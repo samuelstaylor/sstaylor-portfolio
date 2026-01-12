@@ -9,12 +9,16 @@ import { Environment } from "@react-three/drei";
 import { SamClassic } from "./SamClassic";
 import { SamBusiness } from "./SamBusiness";
 import { SamScientist } from "./SamScientist";
+import { SamMusician } from "./SamMusician";
+import { SamProject } from "./SamProject";
 
 type SceneProps = {
   cameraPosition: [number, number, number];
   isHome: boolean;
   isResearch: boolean;
   isEducation: boolean;
+  isMusic: boolean;
+  isProjects: boolean;
 };
 
 export default function Scene({
@@ -22,6 +26,8 @@ export default function Scene({
   isHome,
   isResearch,
   isEducation,
+  isMusic,
+  isProjects,
 }: SceneProps) {
   return (
     <Canvas
@@ -65,6 +71,8 @@ export default function Scene({
         {isHome && <SamClassic />}
         {isResearch && <SamScientist />}
         {isEducation && <SamBusiness />}
+        {isMusic && <SamMusician />}
+        {isProjects && <SamProject />}
       </Suspense>
     </Canvas>
   );
