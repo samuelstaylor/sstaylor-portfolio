@@ -27,7 +27,7 @@ export default function RootLayout({
     "/research": [3, 3, 3],
     "/education": [4, 2, 3],
     "/projects": [0, 3, 5],
-    "/music": [-3, 2, 3],
+    "/music": [7, 2, 0],
     "/contact": [0, 2.5, 3],
   };
 
