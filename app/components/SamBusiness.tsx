@@ -5,47 +5,53 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamBusinessProps = ThreeElements["group"];
+type SamBusinessProps = ThreeElements["group"] & {
+  visible?: boolean;
+  posX?: number;
+  posY?: number;
+  posZ?: number;
+  rotX?: number;
+  rotY?: number;
+  rotZ?: number;
+  scale?: number;
+};
 
-export function SamBusiness(props: SamBusinessProps) {
+export function SamBusiness({
+  visible = true,
+  posX = 1,
+  posY = 0,
+  posZ = 0,
+  rotX = 0,
+  rotY = 0,
+  rotZ = 0,
+  scale = 1,
+  ...props
+}: SamBusinessProps) {
   const group = useRef<THREE.Group>(null);
 
-  // Model
   const { scene } = useGLTF("/models/sam-business.glb");
-
-  // Talking animation
   const fbx = useFBX("/animation/Talking.fbx");
   const { actions } = useAnimations(fbx.animations, group);
 
   useEffect(() => {
-    if (!actions) return;
+    if (!group.current || !actions) return;
 
-    /* ------------------------------
-       FLOOR ALIGNMENT FIX
-    --------------------------------*/
-    const box = new THREE.Box3().setFromObject(scene);
-    scene.position.y -= box.min.y;
-
-    /* ------------------------------
-       PLAY TALKING LOOP
-    --------------------------------*/
-    const talk = Object.values(actions)[0];
-    if (talk) {
-      talk.reset();
-      talk.setLoop(THREE.LoopRepeat, Infinity);
-      talk.clampWhenFinished = true;
-      talk.play();
+    const action = Object.values(actions)[0];
+    if (action) {
+      action.reset();
+      action.setLoop(THREE.LoopRepeat, Infinity);
+      action.play();
     }
-  }, [actions, scene]);
+
+    group.current.position.set(posX, posY, posZ);
+    group.current.rotation.set(rotX, rotY, rotZ);
+    group.current.scale.set(scale, scale, scale);
+
+    scene.position.set(0, 0, 0);
+  }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (
-    <group
-      ref={group}
-      position={[1.2, 0, 0]}
-      rotation={[0, -0.25, 0]}
-      scale={1}
-      {...props}
-    >
+    <group ref={group} visible={visible} {...props}>
       <primitive object={scene} />
     </group>
   );

@@ -5,9 +5,28 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamScientistProps = ThreeElements["group"];
+type SamScientistProps = ThreeElements["group"] & {
+  visible?: boolean;
+  posX?: number;
+  posY?: number;
+  posZ?: number;
+  rotX?: number;
+  rotY?: number;
+  rotZ?: number;
+  scale?: number;
+};
 
-export function SamScientist(props: SamScientistProps) {
+export function SamScientist({
+  visible = true,
+  posX = 1,
+  posY = 0,
+  posZ = 0,
+  rotX = 0,
+  rotY = 0,
+  rotZ = 0,
+  scale = 1,
+  ...props
+}: SamScientistProps) {
   const group = useRef<THREE.Group>(null);
 
   const { scene } = useGLTF("/models/sam-scientist.glb");
@@ -17,25 +36,22 @@ export function SamScientist(props: SamScientistProps) {
   useEffect(() => {
     if (!group.current || !actions) return;
 
-    // Fix ground clipping
-    const box = new THREE.Box3().setFromObject(scene);
-    scene.position.y -= box.min.y;
-
     const action = Object.values(actions)[0];
     if (action) {
       action.reset();
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
     }
-  }, [actions, scene]);
+
+    group.current.position.set(posX, posY, posZ);
+    group.current.rotation.set(rotX, rotY, rotZ);
+    group.current.scale.set(scale, scale, scale);
+
+    scene.position.set(0, 0, 0);
+  }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (
-    <group
-      ref={group}
-      position={[1.2, 0, 0]}
-      rotation={[0, -0.3, 0]}
-      {...props}
-    >
+    <group ref={group} visible={visible} {...props}>
       <primitive object={scene} />
     </group>
   );

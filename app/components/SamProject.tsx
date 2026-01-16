@@ -5,24 +5,36 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamProjectProps = ThreeElements["group"];
+type SamProjectProps = ThreeElements["group"] & {
+  visible?: boolean;
+  posX?: number;
+  posY?: number;
+  posZ?: number;
+  rotX?: number;
+  rotY?: number;
+  rotZ?: number;
+  scale?: number;
+};
 
-export function SamProject(props: SamProjectProps) {
+export function SamProject({
+  visible = true,
+  posX = 1,
+  posY = 0,
+  posZ = 0,
+  rotX = 0,
+  rotY = 0,
+  rotZ = 0,
+  scale = 1,
+  ...props
+}: SamProjectProps) {
   const group = useRef<THREE.Group>(null);
 
-  // Model
   const { scene } = useGLTF("/models/sam-project.glb");
-
-  // Animation
   const fbx = useFBX("/animation/SittingIdle.fbx");
   const { actions } = useAnimations(fbx.animations, group);
 
   useEffect(() => {
     if (!group.current || !actions) return;
-
-    // Align model to ground
-    const box = new THREE.Box3().setFromObject(scene);
-    scene.position.y -= box.min.y;
 
     const action = Object.values(actions)[0];
     if (action) {
@@ -30,15 +42,16 @@ export function SamProject(props: SamProjectProps) {
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
     }
-  }, [actions, scene]);
+
+    group.current.position.set(posX, posY, posZ);
+    group.current.rotation.set(rotX, rotY, rotZ);
+    group.current.scale.set(scale, scale, scale);
+
+    scene.position.set(0, 0, 0);
+  }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (
-    <group
-      ref={group}
-      position={[1.2, 0, 0]}
-      rotation={[0, -0.3, 0]}
-      {...props}
-    >
+    <group ref={group} visible={visible} {...props}>
       <primitive object={scene} />
     </group>
   );
