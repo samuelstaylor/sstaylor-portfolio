@@ -6,6 +6,7 @@ import Scene from "./components/Scene";
 import Navbar from "./components/Navbar";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Loader } from "@react-three/drei";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,9 @@ export default function RootLayout({
           isMusic={pathname === "/music"}
           isProjects={pathname === "/projects"}
         />
+
+        {/* 🔥 SAFE GLOBAL LOADER */}
+        <Loader />
 
         <div className="absolute inset-0 z-10 flex flex-col">
           <Navbar />

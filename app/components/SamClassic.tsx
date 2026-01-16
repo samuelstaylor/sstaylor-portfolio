@@ -30,11 +30,11 @@ export function SamClassic(props: SamClassicProps) {
   }, [actions, scene]);
 
   return (
-    // [x,y,z] x backward (closer to camera), y up, z right
+    // [x,y,z] x right/left (closer to camera), y up/down, z forward/backward
     <group
       ref={group}
-      position={[0, 1.98, 0]}
-      scale={0.2}
+      position={[0, 3.1, 0]}
+      scale={0.2} //{0.2}
       rotation={[0, 0, 0]}
       {...props}
     >

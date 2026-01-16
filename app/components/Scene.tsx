@@ -21,14 +21,16 @@ type SceneProps = {
   isProjects: boolean;
 };
 
-export default function Scene({
-  cameraPosition,
-  isHome,
-  isResearch,
-  isEducation,
-  isMusic,
-  isProjects,
-}: SceneProps) {
+export default function Scene(props: SceneProps) {
+  const {
+    cameraPosition,
+    isHome,
+    isResearch,
+    isEducation,
+    isMusic,
+    isProjects,
+  } = props;
+
   return (
     <Canvas
       shadows
@@ -48,10 +50,7 @@ export default function Scene({
       <directionalLight position={[-5, 5, -5]} intensity={0.5} />
       <pointLight position={[0, 6, 0]} intensity={0.4} />
 
-      {/* Environment */}
       <Environment preset="sunset" />
-
-      {/* Animated camera */}
       <AnimatedCamera target={cameraPosition} />
 
       {/* Ground */}
@@ -64,15 +63,15 @@ export default function Scene({
         />
       </mesh>
 
-      {/* Models */}
+      {/* Models (ALWAYS MOUNTED) */}
       <Suspense fallback={null}>
         <Atomium />
 
-        {isHome && <SamClassic />}
-        {isResearch && <SamScientist />}
-        {isEducation && <SamBusiness />}
-        {isMusic && <SamMusician />}
-        {isProjects && <SamProject />}
+        <SamClassic visible={isHome} />
+        <SamScientist visible={isResearch} />
+        <SamBusiness visible={isEducation} />
+        <SamMusician visible={isMusic} />
+        <SamProject visible={isProjects} />
       </Suspense>
     </Canvas>
   );
