@@ -10,18 +10,24 @@ type SamClassicProps = ThreeElements["group"] & {
   posX?: number;
   posY?: number;
   posZ?: number;
+  rotX?: number;
+  rotY?: number;
+  rotZ?: number;
+  scale?: number;
 };
 
 export function SamClassic({
   visible = true,
   posX = 0,
-  posY = 2,
+  posY = 1.98,
   posZ = 0,
+  rotX = 0,
+  rotY = 0,
+  rotZ = 0,
+  scale = 0.2,
   ...props
 }: SamClassicProps) {
   const group = useRef<THREE.Group>(null);
-
-  const scale = 0.2;
 
   // Load model and animation
   const { scene } = useGLTF("/models/sam-classic.glb");
@@ -39,24 +45,21 @@ export function SamClassic({
       action.play();
     }
 
-    // Set position manually
+    // Apply manual transforms
     group.current.position.set(posX, posY, posZ);
+    group.current.rotation.set(rotX, rotY, rotZ);
+    group.current.scale.set(scale, scale, scale);
 
-    // Reset scene's internal position
+    // Reset the internal scene position
     scene.position.set(0, 0, 0);
-  }, [actions, scene, posX, posY, posZ]);
+  }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (
-    <group
-      ref={group}
-      visible={visible}
-      scale={scale}
-      rotation={[0, 0, 0]}
-      {...props}
-    >
+    <group ref={group} visible={visible} {...props}>
       <primitive object={scene} />
     </group>
   );
 }
 
+// Preload model
 useGLTF.preload("/models/sam-classic.glb");
