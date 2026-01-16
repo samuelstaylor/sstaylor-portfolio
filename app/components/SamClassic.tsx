@@ -7,13 +7,23 @@ import * as THREE from "three";
 
 type SamClassicProps = ThreeElements["group"] & {
   visible?: boolean;
+  posX?: number;
+  posY?: number;
+  posZ?: number;
 };
 
-export function SamClassic({ visible = true, ...props }: SamClassicProps) {
+export function SamClassic({
+  visible = true,
+  posX = 0,
+  posY = 2,
+  posZ = 0,
+  ...props
+}: SamClassicProps) {
   const group = useRef<THREE.Group>(null);
 
   const scale = 0.2;
 
+  // Load model and animation
   const { scene } = useGLTF("/models/sam-classic.glb");
   const fbx = useFBX("/animation/Waving.fbx");
   const { actions } = useAnimations(fbx.animations, group);
@@ -29,24 +39,17 @@ export function SamClassic({ visible = true, ...props }: SamClassicProps) {
       action.play();
     }
 
-    // Compute bounding box
-    const box = new THREE.Box3().setFromObject(scene);
+    // Set position manually
+    group.current.position.set(posX, posY, posZ);
 
-    // Atomium top Y in Blender
-    const atomiumTopY = 2;
-
-    // Set group position so feet sit on top of Atomium
-    group.current.position.y = atomiumTopY - box.min.y * scale;
-
-    // Reset scene Y inside group
-    scene.position.y = 0;
-  }, [actions, scene, scale]);
+    // Reset scene's internal position
+    scene.position.set(0, 0, 0);
+  }, [actions, scene, posX, posY, posZ]);
 
   return (
     <group
       ref={group}
       visible={visible}
-      position={[0, 0, 0]}
       scale={scale}
       rotation={[0, 0, 0]}
       {...props}
