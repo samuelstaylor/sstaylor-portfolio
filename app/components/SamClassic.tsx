@@ -5,10 +5,14 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamClassicProps = ThreeElements["group"];
+type SamClassicProps = ThreeElements["group"] & {
+  visible?: boolean;
+};
 
-export function SamClassic(props: SamClassicProps) {
+export function SamClassic({ visible = true, ...props }: SamClassicProps) {
   const group = useRef<THREE.Group>(null);
+
+  const scale = 0.2;
 
   const { scene } = useGLTF("/models/sam-classic.glb");
   const fbx = useFBX("/animation/Waving.fbx");
@@ -17,24 +21,33 @@ export function SamClassic(props: SamClassicProps) {
   useEffect(() => {
     if (!group.current || !actions) return;
 
-    // Fix ground clipping
-    const box = new THREE.Box3().setFromObject(scene);
-    scene.position.y -= box.min.y;
-
+    // Play animation
     const action = Object.values(actions)[0];
     if (action) {
       action.reset();
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
     }
-  }, [actions, scene]);
+
+    // Compute bounding box
+    const box = new THREE.Box3().setFromObject(scene);
+
+    // Atomium top Y in Blender
+    const atomiumTopY = 2;
+
+    // Set group position so feet sit on top of Atomium
+    group.current.position.y = atomiumTopY - box.min.y * scale;
+
+    // Reset scene Y inside group
+    scene.position.y = 0;
+  }, [actions, scene, scale]);
 
   return (
-    // [x,y,z] x right/left (closer to camera), y up/down, z forward/backward
     <group
       ref={group}
-      position={[0, 3.1, 0]}
-      scale={0.2} //{0.2}
+      visible={visible}
+      position={[0, 0, 0]}
+      scale={scale}
       rotation={[0, 0, 0]}
       {...props}
     >
