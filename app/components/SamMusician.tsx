@@ -18,13 +18,13 @@ type SamMusicianProps = ThreeElements["group"] & {
 
 export function SamMusician({
   visible = true,
-  posX = 2,
+  posX = 0, // 2
   posY = 0,
   posZ = 0,
   rotX = 0,
-  rotY = 0,
+  rotY = -1.57, // -1.57
   rotZ = 0,
-  scale = 1,
+  scale = 20, // 10
   ...props
 }: SamMusicianProps) {
   const group = useRef<THREE.Group>(null);
