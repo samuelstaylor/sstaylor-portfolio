@@ -49,7 +49,7 @@ export default function Scene(props: SceneProps) {
       <directionalLight position={[-5, 5, -5]} intensity={0.5} />
       <pointLight position={[0, 6, 0]} intensity={0.4} />
 
-      <Environment preset="sunset" />
+      <Environment files="/hdr/aurora.jpg" background={false} blur={0.15} />
       <AnimatedCamera target={cameraPosition} />
 
       {/* Models (ALWAYS MOUNTED) */}
