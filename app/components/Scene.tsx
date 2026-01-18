@@ -52,7 +52,7 @@ export default function Scene(props: SceneProps) {
 
       <Environment files="/hdr/aurora.jpg" background={false} blur={0.15} />
 
-      <AuroraCurtains count={75} height={55} width={14} />
+      <AuroraCurtains />
 
       <AnimatedCamera target={cameraPosition} />
 
