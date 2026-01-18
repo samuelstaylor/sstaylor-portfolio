@@ -22,19 +22,18 @@ type SceneProps = {
 };
 
 export default function Scene(props: SceneProps) {
-  const {
-    cameraPosition,
-    isHome,
-    isResearch,
-    isEducation,
-    isMusic,
-    isProjects,
-  } = props;
+  const { cameraPosition, isHome, isResearch, isEducation, isProjects } = props;
 
   return (
     <Canvas
       shadows
-      camera={{ position: cameraPosition, fov: 50 }}
+      gl={{ logarithmicDepthBuffer: true }} // 🔑 CRITICAL FIX
+      camera={{
+        fov: 50,
+        near: 0.1, // 🔑 restore sane near plane
+        far: 5000, // large far is now safe
+        position: cameraPosition,
+      }}
       style={{ background: "#1e1e1e" }}
     >
       {/* Lights */}
@@ -53,16 +52,6 @@ export default function Scene(props: SceneProps) {
       <Environment preset="sunset" />
       <AnimatedCamera target={cameraPosition} />
 
-      {/* Ground */}
-      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[5, 5]} />
-        <meshStandardMaterial
-          color="#2a2a2a"
-          metalness={0.25}
-          roughness={0.75}
-        />
-      </mesh>
-
       {/* Models (ALWAYS MOUNTED) */}
       <Suspense fallback={null}>
         <Atomium />
@@ -70,7 +59,10 @@ export default function Scene(props: SceneProps) {
         <SamClassic visible={isHome} />
         <SamScientist visible={isResearch} />
         <SamBusiness visible={isEducation} />
-        <SamMusician visible={isMusic} />
+
+        {/* ✅ ALWAYS VISIBLE ON ALL PAGES */}
+        <SamMusician />
+
         <SamProject visible={isProjects} />
       </Suspense>
     </Canvas>

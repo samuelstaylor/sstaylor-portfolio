@@ -43,6 +43,13 @@ export function SamScientist({
       action.play();
     }
 
+    // prevent animated mesh clipping
+    scene.traverse((obj) => {
+      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
+        obj.frustumCulled = false;
+      }
+    });
+
     group.current.position.set(posX, posY, posZ);
     group.current.rotation.set(rotX, rotY, rotZ);
     group.current.scale.set(scale, scale, scale);

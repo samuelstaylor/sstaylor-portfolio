@@ -18,13 +18,13 @@ type SamMusicianProps = ThreeElements["group"] & {
 
 export function SamMusician({
   visible = true,
-  posX = 0, // 2
+  posX = 0,
   posY = 0,
   posZ = 0,
   rotX = 0,
-  rotY = -1.57, // -1.57
+  rotY = -1.57,
   rotZ = 0,
-  scale = 20, // 10
+  scale = 20,
   ...props
 }: SamMusicianProps) {
   const group = useRef<THREE.Group>(null);
@@ -35,6 +35,17 @@ export function SamMusician({
 
   useEffect(() => {
     if (!group.current || !actions) return;
+
+    // 🔑 FIX: Disable frustum culling on animated meshes
+    scene.traverse((obj) => {
+      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
+        obj.frustumCulled = false;
+      }
+      if ((obj as THREE.Mesh).isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+    });
 
     const action = Object.values(actions)[0];
     if (action) {

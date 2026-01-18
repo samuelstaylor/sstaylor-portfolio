@@ -45,6 +45,13 @@ export function SamClassic({
       action.play();
     }
 
+    // prevent animated mesh clipping
+    scene.traverse((obj) => {
+      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
+        obj.frustumCulled = false;
+      }
+    });
+
     // Apply manual transforms
     group.current.position.set(posX, posY, posZ);
     group.current.rotation.set(rotX, rotY, rotZ);
