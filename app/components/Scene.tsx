@@ -11,6 +11,7 @@ import { SamBusiness } from "./SamBusiness";
 import { SamScientist } from "./SamScientist";
 import { SamMusician } from "./SamMusician";
 import { SamProject } from "./SamProject";
+import { AuroraCurtains } from "./AuroraCurtains";
 
 type SceneProps = {
   cameraPosition: [number, number, number];
@@ -34,7 +35,7 @@ export default function Scene(props: SceneProps) {
         far: 5000, // large far is now safe
         position: cameraPosition,
       }}
-      style={{ background: "#1e1e1e" }}
+      style={{ background: "#020617" }}
     >
       {/* Lights */}
       <ambientLight intensity={0.6} />
@@ -50,6 +51,11 @@ export default function Scene(props: SceneProps) {
       <pointLight position={[0, 6, 0]} intensity={0.4} />
 
       <Environment files="/hdr/aurora.jpg" background={false} blur={0.15} />
+
+      <AuroraCurtains count={75} height={55} width={14} />
+
+      <AnimatedCamera target={cameraPosition} />
+
       <AnimatedCamera target={cameraPosition} />
 
       {/* Models (ALWAYS MOUNTED) */}
