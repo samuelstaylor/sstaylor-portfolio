@@ -14,7 +14,7 @@ type Curtain = {
 };
 
 export function AuroraCurtains({
-  count = 70,
+  count = 50,
   height = 180, // taller for zoomed out camera
   width = 20,
 }: {
@@ -54,7 +54,7 @@ export function AuroraCurtains({
         const v = (y + height / 2) / height;
 
         // Slight random hue variation per vertex
-        const hueJitter = (Math.random() - 0.5) * 0.05;
+        const hueJitter = (Math.random() - 0.5) * 0.02;
         const hue = THREE.MathUtils.lerp(bottomHue, topHue, v) + hueJitter;
 
         const color = new THREE.Color().setHSL(hue, 0.7, 0.45);
