@@ -14,8 +14,8 @@ type Curtain = {
 };
 
 export function AuroraCurtains({
-  count = 50,
-  height = 180, // taller for zoomed out camera
+  count = 40,
+  height = 180,
   width = 20,
 }: {
   count?: number;
@@ -43,28 +43,45 @@ export function AuroraCurtains({
       const colors: number[] = [];
       const alphas: number[] = [];
 
-      const palette = Math.random();
-      const bottomHue = palette < 0.4 ? 0.33 : 0.75; // green or purple
-      const topHue = palette < 0.6 ? 0.75 : 0.33;
+      // 🎨 Color selection probabilities: green 70%, purple 25%, blue 5%
+      const rand = Math.random();
+      let bottomHue: number;
+      let topHue: number;
+
+      if (rand < 0.7) {
+        bottomHue = 0.33; // green
+        topHue = 0.43; // lighter green top
+      } else if (rand < 0.95) {
+        bottomHue = 0.75; // purple
+        topHue = 0.85; // lighter purple top
+      } else {
+        bottomHue = 0.55; // blue
+        topHue = 0.6; // lighter blue top
+      }
 
       for (let j = 0; j < pos.count; j++) {
         const x = pos.getX(j);
         const y = pos.getY(j);
 
-        const v = (y + height / 2) / height;
+        const v = (y + height / 2) / height; // 0 → 1 vertically
+        const baseHue = THREE.MathUtils.lerp(bottomHue, topHue, v);
 
-        // Slight random hue variation per vertex
-        const hueJitter = (Math.random() - 0.5) * 0.02;
-        const hue = THREE.MathUtils.lerp(bottomHue, topHue, v) + hueJitter;
+        // subtle noise-based variation
+        const hueJitter = (noise.noise(x * 0.05, y * 0.02, 0.5) - 0.5) * 0.02;
+        const hue = baseHue + hueJitter;
 
-        const color = new THREE.Color().setHSL(hue, 0.7, 0.45);
+        // controlled saturation & lightness for ghostly aurora
+        const color = new THREE.Color().setHSL(
+          hue,
+          0.6,
+          0.28 + Math.random() * 0.04
+        );
         colors.push(color.r, color.g, color.b);
 
-        // Ghostly opacity: edges & bottom transparent, middle opaque
-        const fadeX = 1 - Math.pow(Math.abs(x) / (width / 2), 2.5);
-        const fadeY = Math.sin(v * Math.PI); // 0 at bottom & top, 1 in middle
-        const alpha = fadeX * fadeY;
-        alphas.push(alpha);
+        // opacity fades at edges & top/bottom
+        const fadeX = 1 - Math.pow(Math.abs(x) / (width / 2), 2.8);
+        const fadeY = Math.sin(v * Math.PI) * Math.pow(v * (1 - v), 0.25);
+        alphas.push(fadeX * fadeY);
       }
 
       geometry.setAttribute(
@@ -97,29 +114,29 @@ export function AuroraCurtains({
           varying float vAlpha;
           varying vec3 vColor;
           void main() {
-            gl_FragColor = vec4(vColor, vAlpha * 0.6);
+            gl_FragColor = vec4(vColor, vAlpha * 0.4);
           }
         `,
       });
 
       const mesh = new THREE.Mesh(geometry, material);
 
+      // radial placement
       const angle = Math.random() * Math.PI * 2;
       const radius = 60 + Math.random() * 50;
       const zOffset = -15 + Math.random() * 30;
       mesh.position.set(
         Math.cos(angle) * radius,
-        -height * 0.3, // start lower for full coverage
+        -height * 0.35,
         Math.sin(angle) * radius + zOffset
       );
-
       mesh.rotation.y = Math.random() * Math.PI * 2;
 
       list.push({
         mesh,
         basePositions: base,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.05 + Math.random() * 0.3, // slower for more natural drift
+        speed: 0.04 + Math.random() * 0.25,
         noiseOffset: Math.random() * 100,
       });
     }
@@ -141,13 +158,13 @@ export function AuroraCurtains({
           const z = basePositions[ix + 2];
 
           const wave = Math.sin(y * 0.1 + t * speed + phase) * 2.5;
+          const slowWave = Math.sin(y * 0.02 + t * 0.05 + phase * 0.5) * 1.2;
           const swirl =
-            noise.noise(x * 0.08, y * 0.04, t * 0.1 + noiseOffset) * 3;
+            noise.noise(x * 0.08, y * 0.04, t * 0.1 + noiseOffset) * 2;
 
-          // Aurora motion with slight horizontal & vertical drift
-          pos.array[ix + 2] = z + wave + swirl;
-          pos.array[ix + 0] = x + swirl * 0.25;
-          pos.array[ix + 1] = y + swirl * 0.15;
+          pos.array[ix + 2] = z + wave + slowWave + swirl;
+          pos.array[ix + 0] = x + swirl * 0.2;
+          pos.array[ix + 1] = y + swirl * 0.1;
         }
 
         pos.needsUpdate = true;
