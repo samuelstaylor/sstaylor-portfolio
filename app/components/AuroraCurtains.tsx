@@ -14,8 +14,8 @@ type Curtain = {
 };
 
 export function AuroraCurtains({
-  count = 40,
-  height = 180,
+  count = 30,
+  height = 200,
   width = 20,
 }: {
   count?: number;
@@ -37,48 +37,45 @@ export function AuroraCurtains({
         segmentsX,
         segmentsY
       );
+
       const pos = geometry.attributes.position;
       const base = new Float32Array(pos.array);
 
       const colors: number[] = [];
       const alphas: number[] = [];
 
-      // 🎨 Color selection probabilities: green 70%, purple 25%, blue 5%
+      // 🎨 Color probabilities
       const rand = Math.random();
       let bottomHue: number;
       let topHue: number;
 
       if (rand < 0.7) {
-        bottomHue = 0.33; // green
-        topHue = 0.43; // lighter green top
+        bottomHue = 0.33;
+        topHue = 0.43;
       } else if (rand < 0.95) {
-        bottomHue = 0.75; // purple
-        topHue = 0.85; // lighter purple top
+        bottomHue = 0.75;
+        topHue = 0.85;
       } else {
-        bottomHue = 0.55; // blue
-        topHue = 0.6; // lighter blue top
+        bottomHue = 0.55;
+        topHue = 0.6;
       }
 
       for (let j = 0; j < pos.count; j++) {
         const x = pos.getX(j);
         const y = pos.getY(j);
+        const v = (y + height / 2) / height;
 
-        const v = (y + height / 2) / height; // 0 → 1 vertically
         const baseHue = THREE.MathUtils.lerp(bottomHue, topHue, v);
-
-        // subtle noise-based variation
         const hueJitter = (noise.noise(x * 0.05, y * 0.02, 0.5) - 0.5) * 0.02;
-        const hue = baseHue + hueJitter;
 
-        // controlled saturation & lightness for ghostly aurora
         const color = new THREE.Color().setHSL(
-          hue,
+          baseHue + hueJitter,
           0.6,
           0.28 + Math.random() * 0.04
         );
+
         colors.push(color.r, color.g, color.b);
 
-        // opacity fades at edges & top/bottom
         const fadeX = 1 - Math.pow(Math.abs(x) / (width / 2), 2.8);
         const fadeY = Math.sin(v * Math.PI) * Math.pow(v * (1 - v), 0.25);
         alphas.push(fadeX * fadeY);
@@ -121,16 +118,20 @@ export function AuroraCurtains({
 
       const mesh = new THREE.Mesh(geometry, material);
 
-      // radial placement
+      // 🌍 Radial sky placement
       const angle = Math.random() * Math.PI * 2;
-      const radius = 60 + Math.random() * 50;
-      const zOffset = -15 + Math.random() * 30;
+      const radius = 70 + Math.random() * 60;
+      const zOffset = -10 + Math.random() * 20;
+
       mesh.position.set(
         Math.cos(angle) * radius,
-        -height * 0.35,
+        -height * 0.25, // lifted into sky
         Math.sin(angle) * radius + zOffset
       );
-      mesh.rotation.y = Math.random() * Math.PI * 2;
+
+      // 🌌 Critical realism rotations
+      mesh.rotation.x = -THREE.MathUtils.degToRad(-40 + Math.random() * 10);
+      mesh.rotation.y = angle + Math.PI / 2;
 
       list.push({
         mesh,
@@ -162,9 +163,17 @@ export function AuroraCurtains({
           const swirl =
             noise.noise(x * 0.08, y * 0.04, t * 0.1 + noiseOffset) * 2;
 
-          pos.array[ix + 2] = z + wave + slowWave + swirl;
-          pos.array[ix + 0] = x + swirl * 0.2;
+          const thicknessX =
+            noise.noise(x * 0.05, y * 0.05, t * 0.05 + noiseOffset) * 0.6;
+          const thicknessZ =
+            noise.noise(x * 0.04, y * 0.06, t * 0.07 + noiseOffset) * 0.6;
+
+          // 🌌 Atmospheric curvature
+          const curve = Math.pow(y / height, 2) * 6;
+
+          pos.array[ix + 0] = x + swirl * 0.2 + thicknessX;
           pos.array[ix + 1] = y + swirl * 0.1;
+          pos.array[ix + 2] = z + wave + slowWave + swirl + thicknessZ + curve;
         }
 
         pos.needsUpdate = true;
