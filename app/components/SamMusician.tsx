@@ -28,6 +28,7 @@ export function SamMusician({
   ...props
 }: SamMusicianProps) {
   const group = useRef<THREE.Group>(null);
+  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
   const { scene } = useGLTF("/models/sam-musician.glb");
   const fbx = useFBX("/animation/PianoPlaying.fbx");
@@ -36,11 +37,8 @@ export function SamMusician({
   useEffect(() => {
     if (!group.current || !actions) return;
 
-    // 🔑 FIX: Disable frustum culling on animated meshes
     scene.traverse((obj) => {
-      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
-        obj.frustumCulled = false;
-      }
+      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) obj.frustumCulled = false;
       if ((obj as THREE.Mesh).isMesh) {
         obj.castShadow = true;
         obj.receiveShadow = true;
@@ -52,13 +50,23 @@ export function SamMusician({
       action.reset();
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
+      mixerRef.current = actions[
+        action.getClip().name
+      ].getMixer() as THREE.AnimationMixer;
     }
 
     group.current.position.set(posX, posY, posZ);
     group.current.rotation.set(rotX, rotY, rotZ);
     group.current.scale.set(scale, scale, scale);
-
     scene.position.set(0, 0, 0);
+
+    const onVisibility = () => {
+      if (mixerRef.current)
+        mixerRef.current.timeScale =
+          document.visibilityState === "visible" ? 1 : 0;
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
   }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (

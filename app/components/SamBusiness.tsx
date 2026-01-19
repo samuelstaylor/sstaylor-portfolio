@@ -28,6 +28,7 @@ export function SamBusiness({
   ...props
 }: SamBusinessProps) {
   const group = useRef<THREE.Group>(null);
+  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
   const { scene } = useGLTF("/models/sam-business.glb");
   const fbx = useFBX("/animation/Talking.fbx");
@@ -41,20 +42,27 @@ export function SamBusiness({
       action.reset();
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
+      mixerRef.current = actions[
+        action.getClip().name
+      ].getMixer() as THREE.AnimationMixer;
     }
 
-    // prevent animated mesh clipping
     scene.traverse((obj) => {
-      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
-        obj.frustumCulled = false;
-      }
+      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) obj.frustumCulled = false;
     });
 
     group.current.position.set(posX, posY, posZ);
     group.current.rotation.set(rotX, rotY, rotZ);
     group.current.scale.set(scale, scale, scale);
-
     scene.position.set(0, 0, 0);
+
+    const onVisibility = () => {
+      if (mixerRef.current)
+        mixerRef.current.timeScale =
+          document.visibilityState === "visible" ? 1 : 0;
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
   }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (

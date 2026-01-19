@@ -1,7 +1,7 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import * as THREE from "three";
 import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise.js";
 
@@ -23,6 +23,16 @@ export function AuroraCurtains({
 }) {
   const curtains = useRef<Curtain[]>([]);
   const noise = useMemo(() => new ImprovedNoise(), []);
+  const isVisible = useRef(true);
+
+  // Pause animation when tab hidden
+  useEffect(() => {
+    const onVisibility = () => {
+      isVisible.current = document.visibilityState === "visible";
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
 
   curtains.current = useMemo(() => {
     const list: Curtain[] = [];
@@ -37,17 +47,13 @@ export function AuroraCurtains({
         segmentsX,
         segmentsY
       );
-
       const pos = geometry.attributes.position;
-
       const colors: number[] = [];
       const alphas: number[] = [];
 
-      // 🎨 Color probabilities
       const rand = Math.random();
       let bottomHue: number;
       let topHue: number;
-
       if (rand < 0.7) {
         bottomHue = 0.33;
         topHue = 0.43;
@@ -63,18 +69,14 @@ export function AuroraCurtains({
         const x = pos.getX(j);
         const y = pos.getY(j);
         const v = (y + height / 2) / height;
-
         const baseHue = THREE.MathUtils.lerp(bottomHue, topHue, v);
         const hueJitter = (noise.noise(x * 0.05, y * 0.02, 0.5) - 0.5) * 0.02;
-
         const color = new THREE.Color().setHSL(
           baseHue + hueJitter,
           0.6,
           0.28 + Math.random() * 0.04
         );
-
         colors.push(color.r, color.g, color.b);
-
         const fadeX = 1 - Math.pow(Math.abs(x) / (width / 2), 2.8);
         const fadeY = Math.sin(v * Math.PI) * Math.pow(v * (1 - v), 0.25);
         alphas.push(fadeX * fadeY);
@@ -106,23 +108,20 @@ export function AuroraCurtains({
           attribute float alpha;
           varying float vAlpha;
           varying vec3 vColor;
-
           uniform float time;
           uniform float phase;
           uniform float speed;
           uniform float noiseOffset;
           uniform float height;
 
-          // Classic Perlin-style hash
-          float hash(vec3 p) {
-            return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+          float hash(vec3 p){
+            return fract(sin(dot(p, vec3(127.1,311.7,74.7)))*43758.5453);
           }
 
-          float noise(vec3 p) {
+          float noise(vec3 p){
             vec3 i = floor(p);
             vec3 f = fract(p);
-            f = f * f * (3.0 - 2.0 * f);
-
+            f = f*f*(3.0-2.0*f);
             float n000 = hash(i + vec3(0,0,0));
             float n100 = hash(i + vec3(1,0,0));
             float n010 = hash(i + vec3(0,1,0));
@@ -131,73 +130,53 @@ export function AuroraCurtains({
             float n101 = hash(i + vec3(1,0,1));
             float n011 = hash(i + vec3(0,1,1));
             float n111 = hash(i + vec3(1,1,1));
-
             return mix(
-              mix(mix(n000, n100, f.x), mix(n010, n110, f.x), f.y),
-              mix(mix(n001, n101, f.x), mix(n011, n111, f.x), f.y),
+              mix(mix(n000,n100,f.x), mix(n010,n110,f.x), f.y),
+              mix(mix(n001,n101,f.x), mix(n011,n111,f.x), f.y),
               f.z
             );
           }
 
           void main() {
             vec3 p = position;
-
             float wave = sin(p.y * 0.1 + time * speed + phase) * 2.5;
             float slowWave = sin(p.y * 0.02 + time * 0.05 + phase * 0.5) * 1.2;
-
-            float swirl = noise(vec3(
-              p.x * 0.08,
-              p.y * 0.04,
-              time * 0.1 + noiseOffset
-            )) * 2.0;
-
-            float thicknessX = noise(vec3(
-              p.x * 0.05,
-              p.y * 0.05,
-              time * 0.05 + noiseOffset
-            )) * 0.6;
-
-            float thicknessZ = noise(vec3(
-              p.x * 0.04,
-              p.y * 0.06,
-              time * 0.07 + noiseOffset
-            )) * 0.6;
-
-            float curve = pow(p.y / height, 2.0) * 6.0;
-
-            p.x += swirl * 0.2 + thicknessX;
-            p.y += swirl * 0.1;
+            float swirl = noise(vec3(p.x*0.08,p.y*0.04,time*0.1+noiseOffset))*2.0;
+            float thicknessX = noise(vec3(p.x*0.05,p.y*0.05,time*0.05+noiseOffset))*0.6;
+            float thicknessZ = noise(vec3(p.x*0.04,p.y*0.06,time*0.07+noiseOffset))*0.6;
+            float curve = pow(p.y/height,2.0)*6.0;
+            p.x += swirl*0.2 + thicknessX;
+            p.y += swirl*0.1;
             p.z += wave + slowWave + swirl + thicknessZ + curve;
-
             vAlpha = alpha;
             vColor = color;
-
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(p,1.0);
           }
         `,
         fragmentShader: `
           varying float vAlpha;
           varying vec3 vColor;
-
           void main() {
-            gl_FragColor = vec4(vColor, vAlpha * 0.4);
+            float a = vAlpha * 0.4;
+            if(a < 0.01) discard;
+            gl_FragColor = vec4(vColor, a);
           }
         `,
       });
 
       const mesh = new THREE.Mesh(geometry, material);
+      geometry.computeBoundingSphere();
+      if (geometry.boundingSphere) geometry.boundingSphere.radius *= 1.5;
+      mesh.frustumCulled = true;
 
-      // 🌍 Radial sky placement
       const angle = Math.random() * Math.PI * 2;
       const radius = 70 + Math.random() * 60;
       const zOffset = -10 + Math.random() * 20;
-
       mesh.position.set(
         Math.cos(angle) * radius,
         -height * 0.25,
         Math.sin(angle) * radius + zOffset
       );
-
       mesh.rotation.x = -THREE.MathUtils.degToRad(-40 + Math.random() * 10);
       mesh.rotation.y = angle + Math.PI / 2;
 
@@ -208,11 +187,11 @@ export function AuroraCurtains({
         noiseOffset: material.uniforms.noiseOffset.value,
       });
     }
-
     return list;
   }, [count, height, width, noise]);
 
   useFrame(({ clock }) => {
+    if (!isVisible.current) return;
     const t = clock.getElapsedTime();
     curtains.current.forEach(({ mesh }) => {
       (mesh.material as THREE.ShaderMaterial).uniforms.time.value = t;
