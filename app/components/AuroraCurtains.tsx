@@ -7,7 +7,6 @@ import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise.js";
 
 type Curtain = {
   mesh: THREE.Mesh;
-  basePositions: Float32Array;
   phase: number;
   speed: number;
   noiseOffset: number;
@@ -31,6 +30,7 @@ export function AuroraCurtains({
     for (let i = 0; i < count; i++) {
       const segmentsX = 40;
       const segmentsY = 200;
+
       const geometry = new THREE.PlaneGeometry(
         width,
         height,
@@ -39,7 +39,6 @@ export function AuroraCurtains({
       );
 
       const pos = geometry.attributes.position;
-      const base = new Float32Array(pos.array);
 
       const colors: number[] = [];
       const alphas: number[] = [];
@@ -91,25 +90,95 @@ export function AuroraCurtains({
       );
 
       const material = new THREE.ShaderMaterial({
-        vertexColors: true,
         transparent: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
         side: THREE.DoubleSide,
-        uniforms: { time: { value: 0 } },
+        vertexColors: true,
+        uniforms: {
+          time: { value: 0 },
+          phase: { value: Math.random() * Math.PI * 2 },
+          speed: { value: 0.04 + Math.random() * 0.25 },
+          noiseOffset: { value: Math.random() * 100 },
+          height: { value: height },
+        },
         vertexShader: `
           attribute float alpha;
           varying float vAlpha;
           varying vec3 vColor;
+
+          uniform float time;
+          uniform float phase;
+          uniform float speed;
+          uniform float noiseOffset;
+          uniform float height;
+
+          // Classic Perlin-style hash
+          float hash(vec3 p) {
+            return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+          }
+
+          float noise(vec3 p) {
+            vec3 i = floor(p);
+            vec3 f = fract(p);
+            f = f * f * (3.0 - 2.0 * f);
+
+            float n000 = hash(i + vec3(0,0,0));
+            float n100 = hash(i + vec3(1,0,0));
+            float n010 = hash(i + vec3(0,1,0));
+            float n110 = hash(i + vec3(1,1,0));
+            float n001 = hash(i + vec3(0,0,1));
+            float n101 = hash(i + vec3(1,0,1));
+            float n011 = hash(i + vec3(0,1,1));
+            float n111 = hash(i + vec3(1,1,1));
+
+            return mix(
+              mix(mix(n000, n100, f.x), mix(n010, n110, f.x), f.y),
+              mix(mix(n001, n101, f.x), mix(n011, n111, f.x), f.y),
+              f.z
+            );
+          }
+
           void main() {
+            vec3 p = position;
+
+            float wave = sin(p.y * 0.1 + time * speed + phase) * 2.5;
+            float slowWave = sin(p.y * 0.02 + time * 0.05 + phase * 0.5) * 1.2;
+
+            float swirl = noise(vec3(
+              p.x * 0.08,
+              p.y * 0.04,
+              time * 0.1 + noiseOffset
+            )) * 2.0;
+
+            float thicknessX = noise(vec3(
+              p.x * 0.05,
+              p.y * 0.05,
+              time * 0.05 + noiseOffset
+            )) * 0.6;
+
+            float thicknessZ = noise(vec3(
+              p.x * 0.04,
+              p.y * 0.06,
+              time * 0.07 + noiseOffset
+            )) * 0.6;
+
+            float curve = pow(p.y / height, 2.0) * 6.0;
+
+            p.x += swirl * 0.2 + thicknessX;
+            p.y += swirl * 0.1;
+            p.z += wave + slowWave + swirl + thicknessZ + curve;
+
             vAlpha = alpha;
             vColor = color;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
           }
         `,
         fragmentShader: `
           varying float vAlpha;
           varying vec3 vColor;
+
           void main() {
             gl_FragColor = vec4(vColor, vAlpha * 0.4);
           }
@@ -125,60 +194,29 @@ export function AuroraCurtains({
 
       mesh.position.set(
         Math.cos(angle) * radius,
-        -height * 0.25, // lifted into sky
+        -height * 0.25,
         Math.sin(angle) * radius + zOffset
       );
 
-      // 🌌 Critical realism rotations
       mesh.rotation.x = -THREE.MathUtils.degToRad(-40 + Math.random() * 10);
       mesh.rotation.y = angle + Math.PI / 2;
 
       list.push({
         mesh,
-        basePositions: base,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.04 + Math.random() * 0.25,
-        noiseOffset: Math.random() * 100,
+        phase: material.uniforms.phase.value,
+        speed: material.uniforms.speed.value,
+        noiseOffset: material.uniforms.noiseOffset.value,
       });
     }
 
     return list;
-  }, [count, height, width]);
+  }, [count, height, width, noise]);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-
-    curtains.current.forEach(
-      ({ mesh, basePositions, phase, speed, noiseOffset }) => {
-        const pos = mesh.geometry.attributes.position as THREE.BufferAttribute;
-
-        for (let i = 0; i < pos.count; i++) {
-          const ix = i * 3;
-          const x = basePositions[ix];
-          const y = basePositions[ix + 1];
-          const z = basePositions[ix + 2];
-
-          const wave = Math.sin(y * 0.1 + t * speed + phase) * 2.5;
-          const slowWave = Math.sin(y * 0.02 + t * 0.05 + phase * 0.5) * 1.2;
-          const swirl =
-            noise.noise(x * 0.08, y * 0.04, t * 0.1 + noiseOffset) * 2;
-
-          const thicknessX =
-            noise.noise(x * 0.05, y * 0.05, t * 0.05 + noiseOffset) * 0.6;
-          const thicknessZ =
-            noise.noise(x * 0.04, y * 0.06, t * 0.07 + noiseOffset) * 0.6;
-
-          // 🌌 Atmospheric curvature
-          const curve = Math.pow(y / height, 2) * 6;
-
-          pos.array[ix + 0] = x + swirl * 0.2 + thicknessX;
-          pos.array[ix + 1] = y + swirl * 0.1;
-          pos.array[ix + 2] = z + wave + slowWave + swirl + thicknessZ + curve;
-        }
-
-        pos.needsUpdate = true;
-      }
-    );
+    curtains.current.forEach(({ mesh }) => {
+      (mesh.material as THREE.ShaderMaterial).uniforms.time.value = t;
+    });
   });
 
   return (
