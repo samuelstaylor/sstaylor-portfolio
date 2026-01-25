@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #020617; /* deep slate */
+  --foreground: #e5e7eb; /* slate-200 */
 }
 
 @theme inline {
@@ -29,8 +29,8 @@ body {
   background: var(--background);
   overflow: hidden;
 }
-
 body {
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans);
+  text-rendering: optimizeLegibility;
 }
