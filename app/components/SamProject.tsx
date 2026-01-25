@@ -42,9 +42,7 @@ export function SamProject({
       action.reset();
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
-      mixerRef.current = actions[
-        action.getClip().name
-      ].getMixer() as THREE.AnimationMixer;
+      mixerRef.current = action.getMixer();
     }
 
     scene.traverse((obj) => {

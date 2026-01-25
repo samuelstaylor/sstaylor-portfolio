@@ -50,9 +50,7 @@ export function SamMusician({
       action.reset();
       action.setLoop(THREE.LoopRepeat, Infinity);
       action.play();
-      mixerRef.current = actions[
-        action.getClip().name
-      ].getMixer() as THREE.AnimationMixer;
+      mixerRef.current = action.getMixer();
     }
 
     group.current.position.set(posX, posY, posZ);
