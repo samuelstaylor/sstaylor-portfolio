@@ -18,13 +18,13 @@ type SamScientistProps = ThreeElements["group"] & {
 
 export function SamScientist({
   visible = true,
-  posX = 1,
-  posY = 0,
-  posZ = 0,
+  posX = 0,
+  posY = 1.48,
+  posZ = 0.71,
   rotX = 0,
   rotY = 0,
   rotZ = 0,
-  scale = 1,
+  scale = 0.2,
   ...props
 }: SamScientistProps) {
   const group = useRef<THREE.Group>(null);

@@ -22,7 +22,7 @@ export function SamClassic({
   posY = 1.98,
   posZ = 0,
   rotX = 0,
-  rotY = 0,
+  rotY = -3.14 / 6,
   rotZ = 0,
   scale = 0.2,
   ...props

@@ -18,13 +18,13 @@ type SamProjectProps = ThreeElements["group"] & {
 
 export function SamProject({
   visible = true,
-  posX = 1,
+  posX = 0.5,
   posY = 0,
-  posZ = 0,
+  posZ = -0.3,
   rotX = 0,
-  rotY = 0,
+  rotY = 3.14 * (2 / 3),
   rotZ = 0,
-  scale = 1,
+  scale = 0.7,
   ...props
 }: SamProjectProps) {
   const group = useRef<THREE.Group>(null);

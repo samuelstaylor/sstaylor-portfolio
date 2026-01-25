@@ -18,13 +18,13 @@ type SamBusinessProps = ThreeElements["group"] & {
 
 export function SamBusiness({
   visible = true,
-  posX = 1,
-  posY = 0,
-  posZ = 0,
+  posX = 0.63,
+  posY = 1.48,
+  posZ = -0.38,
   rotX = 0,
-  rotY = 0,
+  rotY = 3.14 * (1 / 2),
   rotZ = 0,
-  scale = 1,
+  scale = 0.2,
   ...props
 }: SamBusinessProps) {
   const group = useRef<THREE.Group>(null);
