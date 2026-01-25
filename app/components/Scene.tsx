@@ -15,6 +15,7 @@ import { AuroraCurtains } from "./AuroraCurtains";
 
 type SceneProps = {
   cameraPosition: [number, number, number];
+  cameraTarget: [number, number, number];
   isHome: boolean;
   isResearch: boolean;
   isEducation: boolean;
@@ -23,16 +24,24 @@ type SceneProps = {
 };
 
 export default function Scene(props: SceneProps) {
-  const { cameraPosition, isHome, isResearch, isEducation, isProjects } = props;
+  const {
+    cameraPosition,
+    cameraTarget,
+    isHome,
+    isResearch,
+    isEducation,
+    isProjects,
+    isMusic,
+  } = props;
 
   return (
     <Canvas
       shadows
-      gl={{ logarithmicDepthBuffer: true }} // 🔑 CRITICAL FIX
+      gl={{ logarithmicDepthBuffer: true }}
       camera={{
         fov: 50,
-        near: 0.1, // 🔑 restore sane near plane
-        far: 5000, // large far is now safe
+        near: 0.1,
+        far: 5000,
         position: cameraPosition,
       }}
       style={{ background: "#020617" }}
@@ -54,37 +63,43 @@ export default function Scene(props: SceneProps) {
 
       <AuroraCurtains />
 
-      <AnimatedCamera target={cameraPosition} />
+      {/* Smooth camera */}
+      <AnimatedCamera target={cameraPosition} lookAt={cameraTarget} />
 
-      <AnimatedCamera target={cameraPosition} />
-
-      {/* Models (ALWAYS MOUNTED) */}
+      {/* Models */}
       <Suspense fallback={null}>
         <Atomium />
-
         <SamClassic visible={isHome} />
         <SamScientist visible={isResearch} />
         <SamBusiness visible={isEducation} />
-
-        {/* ✅ ALWAYS VISIBLE ON ALL PAGES */}
         <SamMusician />
-
         <SamProject visible={isProjects} />
       </Suspense>
     </Canvas>
   );
 }
 
-function AnimatedCamera({ target }: { target: [number, number, number] }) {
-  const currentTarget = useRef(new Vector3(...target));
+function AnimatedCamera({
+  target,
+  lookAt,
+}: {
+  target: [number, number, number];
+  lookAt: [number, number, number];
+}) {
+  const currentPosition = useRef(new Vector3(...target));
+  const currentLookAt = useRef(new Vector3(...lookAt));
 
-  useEffect(() => {
-    currentTarget.current.set(...target);
-  }, [target]);
+  const desiredPosition = new Vector3(...target);
+  const desiredLookAt = new Vector3(...lookAt);
 
   useFrame(({ camera }) => {
-    camera.position.lerp(currentTarget.current, 0.05);
-    camera.lookAt(0, 1, 0);
+    // Smoothly interpolate position
+    currentPosition.current.lerp(desiredPosition, 0.05);
+    camera.position.copy(currentPosition.current);
+
+    // Smoothly interpolate lookAt
+    currentLookAt.current.lerp(desiredLookAt, 0.05);
+    camera.lookAt(currentLookAt.current);
   });
 
   return null;

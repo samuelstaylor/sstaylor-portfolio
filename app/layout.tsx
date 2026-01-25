@@ -24,20 +24,33 @@ export default function RootLayout({
   const pathname = usePathname();
 
   const cameraMap: Record<string, [number, number, number]> = {
-    "/": [0, 2, 4],
+    "/": [-2, 2, 4], // Home [0, 2, 4]
     "/research": [3, 3, 3],
     "/education": [4, 2, 3],
     "/projects": [0, 3, 5],
     "/music": [40, 20, 40],
-    "/contact": [7, 2, 0], // [0, 2.5, 3]
+    "/contact": [7, 2, 0],
+  };
+
+  const lookAtMap: Record<string, [number, number, number]> = {
+    "/": [-2, 1, 0],
+    "/research": [0, 1, 0],
+    "/education": [0, 1, 0],
+    "/projects": [0, 2, 0],
+    "/music": [0, 5, 0],
+    "/contact": [0, 1, 0],
   };
 
   const [cameraPosition, setCameraPosition] = useState<
     [number, number, number]
   >([0, 5, 4]);
+  const [cameraTarget, setCameraTarget] = useState<[number, number, number]>([
+    0, 1, 0,
+  ]);
 
   useEffect(() => {
     setCameraPosition(cameraMap[pathname] || [0, 5, 4]);
+    setCameraTarget(lookAtMap[pathname] || [0, 1, 0]);
   }, [pathname]);
 
   return (
@@ -47,6 +60,7 @@ export default function RootLayout({
       >
         <Scene
           cameraPosition={cameraPosition}
+          cameraTarget={cameraTarget}
           isHome={pathname === "/"}
           isResearch={pathname === "/research"}
           isEducation={pathname === "/education"}
@@ -54,7 +68,6 @@ export default function RootLayout({
           isProjects={pathname === "/projects"}
         />
 
-        {/* 🔥 SAFE GLOBAL LOADER */}
         <Loader />
 
         <div className="absolute inset-0 z-10 flex flex-col">
