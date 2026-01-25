@@ -28,7 +28,6 @@ export function SamClassic({
   ...props
 }: SamClassicProps) {
   const group = useRef<THREE.Group>(null);
-  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
   const { scene } = useGLTF("/models/sam-classic.glb");
   const fbx = useFBX("/animation/Waving.fbx");
@@ -38,17 +37,17 @@ export function SamClassic({
     if (!group.current || !actions) return;
 
     const action = Object.values(actions)[0];
-    if (action) {
-      action.reset();
-      action.setLoop(THREE.LoopRepeat, Infinity);
-      action.play();
-      mixerRef.current = actions[
-        action.getClip().name
-      ].getMixer() as THREE.AnimationMixer;
-    }
+    if (!action) return;
 
+    action.reset();
+    action.setLoop(THREE.LoopRepeat, Infinity);
+    action.play();
+
+    // Disable frustum culling for skinned meshes
     scene.traverse((obj) => {
-      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) obj.frustumCulled = false;
+      if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
+        obj.frustumCulled = false;
+      }
     });
 
     group.current.position.set(posX, posY, posZ);
@@ -56,13 +55,16 @@ export function SamClassic({
     group.current.scale.set(scale, scale, scale);
     scene.position.set(0, 0, 0);
 
-    const onVisibility = () => {
-      if (mixerRef.current)
-        mixerRef.current.timeScale =
-          document.visibilityState === "visible" ? 1 : 0;
+    const onVisibilityChange = () => {
+      action.paused = document.hidden;
     };
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => document.removeEventListener("visibilitychange", onVisibility);
+
+    // Set initial state
+    action.paused = document.hidden;
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", onVisibilityChange);
   }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ, scale]);
 
   return (
