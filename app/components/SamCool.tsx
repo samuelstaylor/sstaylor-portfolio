@@ -5,7 +5,7 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamClassicV2Props = ThreeElements["group"] & {
+type SamCoolProps = ThreeElements["group"] & {
   visible?: boolean;
   posX?: number;
   posY?: number;
@@ -16,7 +16,7 @@ type SamClassicV2Props = ThreeElements["group"] & {
   scale?: number;
 };
 
-export function SamClassicV2({
+export function SamCool({
   visible = true,
   posX = 0.65,
   posY = 0,
@@ -26,11 +26,11 @@ export function SamClassicV2({
   rotZ = 0,
   scale = 0.6,
   ...props
-}: SamClassicV2Props) {
+}: SamCoolProps) {
   const group = useRef<THREE.Group>(null);
   const hasMounted = useRef(false);
 
-  const { scene } = useGLTF("/models/sam-classic-v2.glb");
+  const { scene } = useGLTF("/models/sam-cool.glb");
   const fbx = useFBX("/animation/LeaningWall.fbx");
   const { actions } = useAnimations(fbx.animations, group);
 
@@ -108,4 +108,4 @@ export function SamClassicV2({
   );
 }
 
-useGLTF.preload("/models/sam-classic-v2.glb");
+useGLTF.preload("/models/sam-cool.glb");

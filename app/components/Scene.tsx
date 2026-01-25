@@ -7,7 +7,7 @@ import { Vector3 } from "three";
 import { Environment } from "@react-three/drei";
 
 import { SamClassic } from "./SamClassic";
-import { SamClassicV2 } from "./SamClassicV2";
+import { SamCool } from "./SamCool";
 import { SamBusiness } from "./SamBusiness";
 import { SamScientist } from "./SamScientist";
 import { SamMusician } from "./SamMusician";
@@ -72,7 +72,7 @@ export default function Scene(props: SceneProps) {
       <Suspense fallback={null}>
         <Atomium />
         <SamClassic visible={isHome} />
-        <SamClassicV2 visible={isBio} /> {/* Only show on bio page */}
+        <SamCool visible={isBio} /> {/* Only show on bio page */}
         <SamScientist visible={isResearch} />
         <SamBusiness visible={isEducation} />
         <SamMusician />
