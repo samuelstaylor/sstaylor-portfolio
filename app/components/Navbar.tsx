@@ -3,6 +3,7 @@ import Link from "next/link";
 export default function Navbar() {
   const pages = [
     "home",
+    "bio",
     "research",
     "education",
     "projects",

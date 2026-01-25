@@ -5,7 +5,7 @@ import type { ThreeElements } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
-type SamBusinessProps = ThreeElements["group"] & {
+type SamClassicV2Props = ThreeElements["group"] & {
   visible?: boolean;
   posX?: number;
   posY?: number;
@@ -16,26 +16,25 @@ type SamBusinessProps = ThreeElements["group"] & {
   scale?: number;
 };
 
-export function SamBusiness({
+export function SamClassicV2({
   visible = true,
-  posX = 0.63,
-  posY = 1.46,
-  posZ = -0.38,
+  posX = 0.65,
+  posY = 0,
+  posZ = 0.7,
   rotX = 0,
-  rotY = 3.14 * (1 / 2),
+  rotY = -Math.PI / 6,
   rotZ = 0,
-  scale = 0.3,
+  scale = 0.6,
   ...props
-}: SamBusinessProps) {
+}: SamClassicV2Props) {
   const group = useRef<THREE.Group>(null);
-  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
   const hasMounted = useRef(false);
 
-  const { scene } = useGLTF("/models/sam-business.glb");
-  const fbx = useFBX("/animation/Talking.fbx");
+  const { scene } = useGLTF("/models/sam-classic-v2.glb");
+  const fbx = useFBX("/animation/LeaningWall.fbx");
   const { actions } = useAnimations(fbx.animations, group);
 
-  /* ---------------- scale animation ---------------- */
+  /* ---------------- animation ---------------- */
 
   useEffect(() => {
     if (!group.current) return;
@@ -55,14 +54,13 @@ export function SamBusiness({
     }
 
     let t = 0;
-    const duration = 0.45; // ⬅ change to control speed
+    const duration = 0.7;
 
     const animate = () => {
       t += 0.016;
       const alpha = Math.min(t / duration, 1);
       const eased = THREE.MathUtils.smoothstep(alpha, 0, 1);
       const s = THREE.MathUtils.lerp(startScale, targetScale, eased);
-
       group.current!.scale.set(s, s, s);
 
       if (alpha < 1) requestAnimationFrame(animate);
@@ -71,18 +69,17 @@ export function SamBusiness({
     animate();
   }, [visible, scale]);
 
-  /* ---------------- animation + setup ---------------- */
+  /* ---------------- setup ---------------- */
 
   useEffect(() => {
     if (!group.current || !actions) return;
 
     const action = Object.values(actions)[0];
-    if (action) {
-      action.reset();
-      action.setLoop(THREE.LoopRepeat, Infinity);
-      action.play();
-      mixerRef.current = action.getMixer();
-    }
+    if (!action) return;
+
+    action.reset();
+    action.setLoop(THREE.LoopRepeat, Infinity);
+    action.play();
 
     scene.traverse((obj) => {
       if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
@@ -94,15 +91,14 @@ export function SamBusiness({
     group.current.rotation.set(rotX, rotY, rotZ);
     scene.position.set(0, 0, 0);
 
-    const onVisibility = () => {
-      if (mixerRef.current) {
-        mixerRef.current.timeScale =
-          document.visibilityState === "visible" ? 1 : 0;
-      }
+    const onVisibilityChange = () => {
+      action.paused = document.hidden;
     };
 
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => document.removeEventListener("visibilitychange", onVisibility);
+    action.paused = document.hidden;
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", onVisibilityChange);
   }, [actions, scene, posX, posY, posZ, rotX, rotY, rotZ]);
 
   return (
@@ -112,4 +108,4 @@ export function SamBusiness({
   );
 }
 
-useGLTF.preload("/models/sam-business.glb");
+useGLTF.preload("/models/sam-classic-v2.glb");

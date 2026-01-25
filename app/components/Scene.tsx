@@ -7,6 +7,7 @@ import { Vector3 } from "three";
 import { Environment } from "@react-three/drei";
 
 import { SamClassic } from "./SamClassic";
+import { SamClassicV2 } from "./SamClassicV2";
 import { SamBusiness } from "./SamBusiness";
 import { SamScientist } from "./SamScientist";
 import { SamMusician } from "./SamMusician";
@@ -17,6 +18,7 @@ type SceneProps = {
   cameraPosition: [number, number, number];
   cameraTarget: [number, number, number];
   isHome: boolean;
+  isBio: boolean;
   isResearch: boolean;
   isEducation: boolean;
   isMusic: boolean;
@@ -28,10 +30,10 @@ export default function Scene(props: SceneProps) {
     cameraPosition,
     cameraTarget,
     isHome,
+    isBio,
     isResearch,
     isEducation,
     isProjects,
-    isMusic,
   } = props;
 
   return (
@@ -70,6 +72,7 @@ export default function Scene(props: SceneProps) {
       <Suspense fallback={null}>
         <Atomium />
         <SamClassic visible={isHome} />
+        <SamClassicV2 visible={isBio} /> {/* Only show on bio page */}
         <SamScientist visible={isResearch} />
         <SamBusiness visible={isEducation} />
         <SamMusician />
