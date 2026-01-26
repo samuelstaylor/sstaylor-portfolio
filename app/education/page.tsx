@@ -6,6 +6,7 @@ import Image from "next/image";
 
 export default function Education() {
   const [minimized, setMinimized] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const openWidth = "50vw";
   const minimizedWidth = 400;
   const openHeight = "auto";
@@ -90,11 +91,13 @@ export default function Education() {
     <motion.div
       drag
       dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+      dragListener={isDragging}
       dragMomentum={false}
+      onDragEnd={() => setIsDragging(false)} // Reset isDragging after drag ends
       initial={{ opacity: 0, x: -40, y: 10 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 1.5, ease: "easeOut" }}
-      className="pointer-events-auto fixed top-24 left-16 z-50 cursor-grab"
+      className="pointer-events-auto fixed top-24 left-16 z-50"
     >
       <motion.div
         initial={{ width: openWidth, height: openHeight }}
@@ -114,7 +117,11 @@ export default function Education() {
         />
 
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-3 h-14 relative z-10">
+        <motion.div
+          onPointerDown={() => setIsDragging(true)}
+          onPointerUp={() => setIsDragging(false)}
+          className="flex justify-between items-center px-6 py-3 h-14 relative z-10 cursor-grab"
+        >
           <h2 className="text-white font-bold text-3xl select-none whitespace-nowrap">
             Education & Experience
           </h2>
@@ -125,7 +132,7 @@ export default function Education() {
           >
             {minimized ? "+" : "-"}
           </button>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <AnimatePresence>
@@ -143,18 +150,7 @@ export default function Education() {
                   href="/pdf/cv.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="
-                    inline-block
-                    text-lg
-                    text-emerald-300
-                    underline underline-offset-4
-                    decoration-emerald-300/70
-                    font-medium tracking-wide
-                    transition-all duration-300
-                    hover:text-emerald-200
-                    hover:decoration-emerald-200
-                    hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]
-                  "
+                  className="inline-block text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
                 >
                   View CV
                 </a>
