@@ -8,7 +8,7 @@ export default function Education() {
   const [minimized, setMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const openWidth = "50vw";
-  const minimizedWidth = 400;
+  const minimizedWidth = 450;
   const openHeight = "auto";
   const minimizedHeight = 56;
 
