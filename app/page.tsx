@@ -35,49 +35,24 @@ export default function Home() {
 
         {/* Keywords / chips */}
         <div className="flex flex-wrap gap-3 mt-6">
-          {[
-            {
-              text: "Computational Nanoscience",
-              color: "text-emerald-400",
-              shadow: "shadow-[0_0_15px_#34D399]",
-            },
-            {
-              text: "Non-Adiabatic Dynamics",
-              color: "text-cyan-400",
-              shadow: "shadow-[0_0_15px_#22D3EE]",
-            },
-            {
-              text: "Light-Matter Interactions",
-              color: "text-violet-400",
-              shadow: "shadow-[0_0_15px_#A78BFA]",
-            },
-            {
-              text: "Quantum Materials",
-              color: "text-indigo-400",
-              shadow: "shadow-[0_0_15px_#818CF8]",
-            },
-            {
-              text: "TDDFT Simulations",
-              color: "text-pink-400",
-              shadow: "shadow-[0_0_15px_#F472B6]",
-            },
-            {
-              text: "3D Scientific Visualization",
-              color: "text-orange-400",
-              shadow: "shadow-[0_0_15px_#FB923C]",
-            },
-          ].map((keyword) => (
-            <span
-              key={keyword.text}
-              className={`
-        px-3 py-1 rounded-full bg-white/10 text-sm font-medium
-        transition-all duration-300 ease-out
-        hover:scale-105 ${keyword.color} hover:${keyword.shadow}
-      `}
-            >
-              {keyword.text}
-            </span>
-          ))}
+          <span className="px-3 py-1 rounded-full bg-white/10 text-emerald-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#34D399]">
+            Computational Nanoscience
+          </span>
+          <span className="px-3 py-1 rounded-full bg-white/10 text-cyan-400 text-sm font-medium bg-white/10 transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#22D3EE]">
+            Non-Adiabatic Dynamics
+          </span>
+          <span className="px-3 py-1 rounded-full bg-white/10 text-violet-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#A78BFA]">
+            Light-Matter Interactions
+          </span>
+          <span className="px-3 py-1 rounded-full bg-white/10 text-indigo-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#818CF8]">
+            Quantum Materials
+          </span>
+          <span className="px-3 py-1 rounded-full bg-white/10 text-pink-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#F472B6]">
+            TDDFT Simulations
+          </span>
+          <span className="px-3 py-1 rounded-full bg-white/10 text-orange-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#FB923C]">
+            3D Scientific Visualization
+          </span>
         </div>
 
         {/* Short bio / welcome message */}
