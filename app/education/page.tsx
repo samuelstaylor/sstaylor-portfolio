@@ -49,7 +49,7 @@ export default function Education() {
         }}
         className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
       >
-        {/* Frosted glass blur behind content */}
+        {/* Frosted glass behind content */}
         <div className="absolute inset-0 bg-white/10 backdrop-blur-xl z-0 pointer-events-none"></div>
 
         {/* Header */}
@@ -75,7 +75,7 @@ export default function Education() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto relative z-10"
+              className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
               {/* CV Link */}
               <p>
