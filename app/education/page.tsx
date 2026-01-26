@@ -2,13 +2,33 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Education() {
   const [minimized, setMinimized] = useState(false);
-  const openWidth = "60vw";
-  const minimizedWidth = 500; // keep title on one line
+  const openWidth = "50vw";
+  const minimizedWidth = 400;
   const openHeight = "auto";
   const minimizedHeight = 56;
+
+  const skills = [
+    { text: "Python", color: "text-emerald-400", glow: "#34D399" },
+    { text: "C++", color: "text-cyan-400", glow: "#22D3EE" },
+    { text: "Fortran", color: "text-violet-400", glow: "#A78BFA" },
+    { text: "TDDFT / DFT", color: "text-pink-400", glow: "#F472B6" },
+    { text: "CUDA & OpenMP", color: "text-orange-400", glow: "#FB923C" },
+    { text: "Quantum Espresso", color: "text-indigo-400", glow: "#818CF8" },
+    { text: "WEST", color: "text-emerald-400", glow: "#34D399" },
+    { text: "SALMON", color: "text-cyan-400", glow: "#22D3EE" },
+    {
+      text: "Scientific Visualization",
+      color: "text-violet-400",
+      glow: "#A78BFA",
+    },
+    { text: "Blender", color: "text-orange-400", glow: "#FB923C" },
+    { text: "React / Three.js", color: "text-pink-400", glow: "#F472B6" },
+    { text: "Machine Learning", color: "text-indigo-400", glow: "#818CF8" },
+  ];
 
   return (
     <motion.div
@@ -27,10 +47,19 @@ export default function Education() {
           height: minimized ? minimizedHeight : openHeight,
           transition: { duration: 0.5, ease: "easeInOut" },
         }}
-        className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl overflow-hidden relative"
+        className="
+          rounded-3xl
+          bg-white/10
+          backdrop-blur-xl
+          border border-white/20
+          shadow-2xl
+          overflow-hidden
+          relative
+        "
       >
-        <div className="flex justify-between items-center px-4 py-2 h-14">
-          <h2 className="text-white font-bold text-4xl select-none whitespace-nowrap">
+        {/* Header */}
+        <div className="flex justify-between items-center px-6 py-3 h-14">
+          <h2 className="text-white font-bold text-3xl select-none whitespace-nowrap">
             Education & Experience
           </h2>
           <button
@@ -42,6 +71,7 @@ export default function Education() {
           </button>
         </div>
 
+        {/* Content */}
         <AnimatePresence>
           {!minimized && (
             <motion.div
@@ -50,34 +80,206 @@ export default function Education() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="p-8 text-white/70 text-lg leading-relaxed space-y-4 max-h-[70vh] overflow-y-auto scrollbar-theme"
+              className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme"
             >
+              {/* CV Link */}
               <p>
-                I earned my undergraduate degree in Computer Science at
-                Vanderbilt University, where I focused on computational physics
-                and scientific computing. During this time, I conducted research
-                in TDDFT simulations, Coulomb explosion modeling, and
-                interactive 3D scientific visualizations.
+                <a
+                  href="/pdf/cv.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cv-link"
+                >
+                  View CV
+                </a>
               </p>
 
-              <p>
-                In addition to my academic work, I have gained experience as a
-                research assistant, collaborating on projects involving
-                light-matter interactions, quantum materials, and high-fidelity
-                simulations. I also developed computational tools for analyzing
-                simulation data and visualizing complex physical phenomena.
-              </p>
+              {/* Education */}
+              <div className="flex items-start space-x-4">
+                <Image
+                  src="/images/uchicago.png"
+                  alt="University of Chicago"
+                  width={140}
+                  height={140}
+                  className="object-contain"
+                />
+                <div>
+                  <h3 className="text-white font-semibold text-xl">
+                    University of Chicago | Chicago, IL
+                  </h3>
+                  <p>Ph.D., Quantum Science and Engineering</p>
+                  <p>NSF GRFP Fellow & PME Graduate Fellow</p>
+                  <p>Advisor: Giulia Galli</p>
+                  <p>September 2025 – Present</p>
+                </div>
+              </div>
 
-              <p>
-                My education and experience have equipped me with strong skills
-                in numerical simulations, Python, C++, React, Three.js, and
-                scientific visualization, which I continue to apply in ongoing
-                research and personal projects.
-              </p>
+              <div className="flex items-start space-x-4">
+                <Image
+                  src="/images/vandy.png"
+                  alt="Vanderbilt University"
+                  width={140}
+                  height={140}
+                  className="object-contain"
+                />
+                <div>
+                  <h3 className="text-white font-semibold text-xl">
+                    Vanderbilt University | Nashville, TN
+                  </h3>
+                  <p>
+                    B.S. Physics (Highest Honors), Computer Science, Applied
+                    Mathematics
+                  </p>
+                  <p>Minor: Scientific Computing</p>
+                  <p>
+                    Thesis: “Fragmentation in Coulomb Explosion of Hydrocarbons”
+                  </p>
+                  <p>Advisor: Kálmán Varga</p>
+                  <p>August 2021 – May 2025</p>
+                </div>
+              </div>
+
+              {/* Skills */}
+              <h3 className="text-white font-semibold text-2xl mt-4">Skills</h3>
+              <div className="flex flex-wrap gap-3">
+                {skills.map((skill) => (
+                  <SkillPill
+                    key={skill.text}
+                    text={skill.text}
+                    color={skill.color}
+                    glow={skill.glow}
+                  />
+                ))}
+              </div>
+
+              {/* Research Experiences */}
+              <h3 className="text-white font-semibold text-2xl mt-4">
+                Research Experiences
+              </h3>
+
+              <Experience
+                img="/images/pme-hex.png"
+                title="Pritzker School of Molecular Engineering at University of Chicago | Chicago, IL"
+                role="Ph.D. Student Researcher, PI: Dr. Giulia Galli"
+                dates="September 2025 – Present"
+                summary="Developing first-principles non-adiabatic molecular dynamics methods using linear-response TDDFT and surface-hopping techniques within the WEST code."
+              />
+
+              <Experience
+                img="/images/vandy-physics.jpg"
+                title="Vanderbilt University | Nashville, TN"
+                role="Research Assistant: Computational Nanoscience, PI: Dr. Kálmán Varga"
+                dates="August 2023 – August 2025"
+                summary="Conducted large-scale TDDFT simulations of light–matter interactions and molecular collisions, generating multi-terabyte datasets while mentoring students in simulation workflows and analysis."
+              />
+
+              <Experience
+                img="/images/eli-logo.jpg"
+                title="ELI-ALPS Laser Research Institute | Szeged, Hungary"
+                role="Research Assistant: Ultrafast Dynamics / Theory & Simulation"
+                dates="May 2024 / 2025 – August 2024 / 2025"
+                summary="Performed hundreds of real-time TDDFT simulations of laser-driven Coulomb explosion and high-harmonic generation, presenting results to international theory and experimental groups."
+              />
+
+              <Experience
+                img="/images/vandy-cs.png"
+                title="Vanderbilt University | Nashville, TN"
+                role="Research Assistant: Computer Graphics, Numerical Methods, and Machine Learning, PI: Dr. David Hyde"
+                dates="January 2025 – May 2025"
+                summary="Applied machine learning to accelerate iterative linear solvers and numerically solved fluid dynamics equations with high-quality visualization in Blender and Houdini."
+              />
+
+              <Experience
+                img="/images/tsukuba.png"
+                title="University of Tsukuba | Tsukuba, Japan"
+                role="Research Assistant, PI: Dr. Kazuhiro Yabana"
+                dates="May 2023 – July 2023"
+                summary="Performed DFT and QED-DFT simulations using SALMON to study electronic structure and chiral energy shifts, visualizing and presenting results with scientific visualization tools."
+              />
+
+              <Experience
+                img="/images/vandy-physics.jpg"
+                title="Vanderbilt University | Nashville, TN"
+                role="Research Assistant: Cosmology, PI: Dr. Robert Scherrer"
+                dates="February 2022 – May 2023"
+                summary="Developed numerical cosmology tools to analyze dark energy models through luminosity distance calculations, statistical fitting, and data visualization in Python."
+              />
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
     </motion.div>
+  );
+}
+
+// Skill Pill component with its own state
+function SkillPill({
+  text,
+  color,
+  glow,
+}: {
+  text: string;
+  color: string;
+  glow: string;
+}) {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <span
+      className={`
+        px-3 py-1
+        rounded-full
+        bg-white/10
+        text-sm
+        font-medium
+        transition-all
+        duration-300
+        ease-out
+        hover:scale-105
+        ${color}
+      `}
+      style={{
+        boxShadow: hover ? `0 0 15px ${glow}` : "none",
+      }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {text}
+    </span>
+  );
+}
+
+// Experience component
+function Experience({
+  img,
+  title,
+  role,
+  dates,
+  summary,
+}: {
+  img: string;
+  title: string;
+  role: string;
+  dates: string;
+  summary: string;
+}) {
+  return (
+    <div className="flex items-start space-x-4">
+      <Image
+        src={img}
+        alt={title}
+        width={120}
+        height={120}
+        className="object-contain"
+      />
+      <div className="space-y-1">
+        <p>
+          <strong>{title}</strong>
+        </p>
+        <p className="text-white/80">{role}</p>
+        <p className="text-white/60 italic leading-relaxed">{summary}</p>
+        <p className="text-white/50">{dates}</p>
+      </div>
+    </div>
   );
 }
