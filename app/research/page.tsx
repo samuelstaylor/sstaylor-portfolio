@@ -7,9 +7,69 @@ export default function Research() {
   const [minimized, setMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const openWidth = "50vw";
-  const minimizedWidth = 240;
+  const minimizedWidth = 450;
   const openHeight = "auto";
   const minimizedHeight = 56;
+
+  const researchKeywords = [
+    {
+      text: "Computational Nanoscience",
+      color: "text-emerald-400",
+      glow: "#34D399",
+      url: "",
+    },
+    {
+      text: "Non-Adiabatic Dynamics",
+      color: "text-cyan-400",
+      glow: "#22D3EE",
+      url: "",
+    },
+    {
+      text: "Light-Matter Interactions",
+      color: "text-violet-400",
+      glow: "#A78BFA",
+      url: "",
+    },
+    {
+      text: "Quantum Materials",
+      color: "text-pink-400",
+      glow: "#F472B6",
+      url: "",
+    },
+    {
+      text: "TDDFT Simulations",
+      color: "text-orange-400",
+      glow: "#FB923C",
+      url: "",
+    },
+    {
+      text: "Coulomb Explosions",
+      color: "text-indigo-400",
+      glow: "#818CF8",
+      url: "",
+    },
+    {
+      text: "Scientific Visualization",
+      color: "text-emerald-400",
+      glow: "#34D399",
+      url: "",
+    },
+    {
+      text: "Machine Learning",
+      color: "text-cyan-400",
+      glow: "#22D3EE",
+      url: "",
+    },
+    {
+      text: "High-Performance Computing",
+      color: "text-violet-400",
+      glow: "#A78BFA",
+      url: "",
+    },
+  ];
+
+  const linkClass =
+    "text-emerald-300 hover:text-emerald-400 underline decoration-emerald-500/50 hover:decoration-emerald-400 transition-colors duration-300";
 
   return (
     <motion.div
@@ -17,7 +77,7 @@ export default function Research() {
       dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
       dragListener={isDragging}
       dragMomentum={false}
-      onDragEnd={() => setIsDragging(false)} // Reset isDragging after drag ends
+      onDragEnd={() => setIsDragging(false)}
       initial={{ opacity: 0, x: -40, y: 10 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 1.5, ease: "easeOut" }}
@@ -69,31 +129,83 @@ export default function Research() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
+              {/* Google Scholar Link */}
               <p>
-                Here’s my research content. I specialize in computational
-                nanoscience, non-adiabatic dynamics, light-matter interactions,
-                and high-fidelity 3D visualizations. My work combines
-                first-principles simulations, TDDFT, and scientific computing to
-                explore quantum materials, molecular fragmentation, and
-                excited-state dynamics.
+                <a
+                  href="https://scholar.google.com/citations?user=69Gy3HIAAAAJ&hl=en"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                >
+                  View Google Scholar
+                </a>
+              </p>
+
+              {/* Keywords / Research Interests */}
+              <h3 className="text-white font-semibold text-2xl mt-2">
+                Research Interests
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {researchKeywords.map((keyword) => (
+                  <KeywordPill key={keyword.text} {...keyword} />
+                ))}
+              </div>
+
+              {/* Research Description */}
+              <p>
+                I specialize in computational nanoscience, non-adiabatic
+                dynamics, light-matter interactions, and high-fidelity 3D
+                visualizations. My work combines first-principles simulations,
+                TDDFT, and scientific computing to explore quantum materials,
+                molecular fragmentation, and excited-state dynamics.
               </p>
 
               <p>
                 I have experience performing large-scale TDDFT simulations,
-                analyzing Coulomb explosions, and visualizing quantum phenomena.
-                I also create interactive 3D scientific visualizations that help
-                convey complex physics concepts clearly and effectively.
+                analyzing Coulomb explosions, and creating interactive
+                scientific visualizations to communicate complex quantum
+                phenomena clearly.
               </p>
 
               <p>
-                Outside of direct research, I collaborate on computational
-                projects, develop scientific tools, and explore new methods for
-                simulating light-matter interactions in quantum materials.
+                I also collaborate on computational projects, develop scientific
+                tools, and explore new methods for simulating light-matter
+                interactions in quantum materials.
               </p>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
     </motion.div>
+  );
+}
+
+// -----------------------
+// Keyword Pill component
+// -----------------------
+function KeywordPill({
+  text,
+  color,
+  glow,
+  url,
+}: {
+  text: string;
+  color: string;
+  glow: string;
+  url: string;
+}) {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <a href={url || "#"} target="_blank" rel="noopener noreferrer">
+      <span
+        className={`px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${color}`}
+        style={{ boxShadow: hover ? `0 0 15px ${glow}` : "none" }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        {text}
+      </span>
+    </a>
   );
 }

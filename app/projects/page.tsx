@@ -17,7 +17,7 @@ export default function Projects() {
       dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
       dragListener={isDragging}
       dragMomentum={false}
-      onDragEnd={() => setIsDragging(false)} // Reset isDragging after drag ends
+      onDragEnd={() => setIsDragging(false)}
       initial={{ opacity: 0, x: -40, y: 10 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 1.5, ease: "easeOut" }}
@@ -69,6 +69,18 @@ export default function Projects() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
+              {/* GitHub Link */}
+              <p>
+                <a
+                  href="https://github.com/samuelstaylor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                >
+                  View GitHub
+                </a>
+              </p>
+
               <p>
                 My projects explore computational nanoscience, quantum
                 simulations, and interactive 3D scientific visualization. I
