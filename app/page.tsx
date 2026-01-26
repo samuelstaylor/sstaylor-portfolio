@@ -1,11 +1,45 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function Home() {
+  const keywords = [
+    {
+      text: "Computational Nanoscience",
+      color: "text-emerald-400",
+      glow: "#34D399",
+    },
+    {
+      text: "Non-Adiabatic Dynamics",
+      color: "text-cyan-400",
+      glow: "#22D3EE",
+    },
+    {
+      text: "Light-Matter Interactions",
+      color: "text-violet-400",
+      glow: "#A78BFA",
+    },
+    {
+      text: "Quantum Materials",
+      color: "text-indigo-400",
+      glow: "#818CF8",
+    },
+    {
+      text: "TDDFT Simulations",
+      color: "text-pink-400",
+      glow: "#F472B6",
+    },
+    {
+      text: "3D Scientific Visualization",
+      color: "text-orange-400",
+      glow: "#FB923C",
+    },
+  ];
+
   return (
     <div className="pointer-events-none flex h-full items-center px-16 relative">
-      {/* Main Box: left-aligned, 50% width with transition */}
+      {/* Main Box */}
       <motion.div
         initial={{ opacity: 0, filter: "blur(12px)", x: -40, y: 10 }}
         animate={{ opacity: 1, filter: "blur(0px)", x: 0, y: 0 }}
@@ -35,27 +69,26 @@ export default function Home() {
 
         {/* Keywords / chips */}
         <div className="flex flex-wrap gap-3 mt-6">
-          <span className="px-3 py-1 rounded-full bg-white/10 text-emerald-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#34D399]">
-            Computational Nanoscience
-          </span>
-          <span className="px-3 py-1 rounded-full bg-white/10 text-cyan-400 text-sm font-medium bg-white/10 transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#22D3EE]">
-            Non-Adiabatic Dynamics
-          </span>
-          <span className="px-3 py-1 rounded-full bg-white/10 text-violet-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#A78BFA]">
-            Light-Matter Interactions
-          </span>
-          <span className="px-3 py-1 rounded-full bg-white/10 text-indigo-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#818CF8]">
-            Quantum Materials
-          </span>
-          <span className="px-3 py-1 rounded-full bg-white/10 text-pink-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#F472B6]">
-            TDDFT Simulations
-          </span>
-          <span className="px-3 py-1 rounded-full bg-white/10 text-orange-400 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_15px_#FB923C]">
-            3D Scientific Visualization
-          </span>
+          {keywords.map((keyword) => {
+            const [hover, setHover] = useState(false);
+
+            return (
+              <span
+                key={keyword.text}
+                className={`px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${keyword.color}`}
+                style={{
+                  boxShadow: hover ? `0 0 15px ${keyword.glow}` : "none",
+                }}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
+                {keyword.text}
+              </span>
+            );
+          })}
         </div>
 
-        {/* Short bio / welcome message */}
+        {/* Short bio */}
         <p className="mt-6 text-white/70 text-lg leading-relaxed">
           Welcome! I am a Ph.D. student in Quantum Science and Engineering at
           the University of Chicago, specializing in computational nanoscience,
