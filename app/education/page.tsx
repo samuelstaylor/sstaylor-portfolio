@@ -143,7 +143,18 @@ export default function Education() {
                   href="/pdf/cv.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cv-link"
+                  className="
+                    inline-block
+                    text-lg
+                    text-emerald-300
+                    underline underline-offset-4
+                    decoration-emerald-300/70
+                    font-medium tracking-wide
+                    transition-all duration-300
+                    hover:text-emerald-200
+                    hover:decoration-emerald-200
+                    hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]
+                  "
                 >
                   View CV
                 </a>
