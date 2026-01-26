@@ -35,8 +35,8 @@ export default function Education() {
       drag
       dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
       dragMomentum={false}
-      initial={{ opacity: 0, filter: "blur(12px)", x: -40, y: 10 }}
-      animate={{ opacity: 1, filter: "blur(0px)", x: 0, y: 0 }}
+      initial={{ opacity: 0, x: -40, y: 10 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 1.5, ease: "easeOut" }}
       className="pointer-events-auto fixed top-24 left-16 z-50 cursor-grab"
     >
@@ -47,24 +47,19 @@ export default function Education() {
           height: minimized ? minimizedHeight : openHeight,
           transition: { duration: 0.5, ease: "easeInOut" },
         }}
-        className="
-          rounded-3xl
-          bg-white/10
-          backdrop-blur-xl
-          border border-white/20
-          shadow-2xl
-          overflow-hidden
-          relative
-        "
+        className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
       >
+        {/* Frosted glass blur behind content */}
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-xl z-0 pointer-events-none"></div>
+
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-3 h-14">
+        <div className="flex justify-between items-center px-6 py-3 h-14 relative z-10">
           <h2 className="text-white font-bold text-3xl select-none whitespace-nowrap">
             Education & Experience
           </h2>
           <button
             onClick={() => setMinimized(!minimized)}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white font-bold transition-colors duration-300"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white font-bold transition-colors duration-300 relative z-10"
             aria-label={minimized ? "Maximize" : "Minimize"}
           >
             {minimized ? "+" : "-"}
@@ -80,7 +75,7 @@ export default function Education() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme"
+              className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto relative z-10"
             >
               {/* CV Link */}
               <p>
@@ -95,49 +90,21 @@ export default function Education() {
               </p>
 
               {/* Education */}
-              <div className="flex items-start space-x-4">
-                <Image
-                  src="/images/uchicago.png"
-                  alt="University of Chicago"
-                  width={140}
-                  height={140}
-                  className="object-contain"
-                />
-                <div>
-                  <h3 className="text-white font-semibold text-xl">
-                    University of Chicago | Chicago, IL
-                  </h3>
-                  <p>Ph.D., Quantum Science and Engineering</p>
-                  <p>NSF GRFP Fellow & PME Graduate Fellow</p>
-                  <p>Advisor: Giulia Galli</p>
-                  <p>September 2025 – Present</p>
-                </div>
-              </div>
+              <EducationBlock
+                img="/images/uchicago.png"
+                school="University of Chicago | Chicago, IL"
+                degree="Ph.D., Quantum Science and Engineering"
+                advisor="Giulia Galli"
+                dates="September 2025 – Present"
+              />
 
-              <div className="flex items-start space-x-4">
-                <Image
-                  src="/images/vandy.png"
-                  alt="Vanderbilt University"
-                  width={140}
-                  height={140}
-                  className="object-contain"
-                />
-                <div>
-                  <h3 className="text-white font-semibold text-xl">
-                    Vanderbilt University | Nashville, TN
-                  </h3>
-                  <p>
-                    B.S. Physics (Highest Honors), Computer Science, Applied
-                    Mathematics
-                  </p>
-                  <p>Minor: Scientific Computing</p>
-                  <p>
-                    Thesis: “Fragmentation in Coulomb Explosion of Hydrocarbons”
-                  </p>
-                  <p>Advisor: Kálmán Varga</p>
-                  <p>August 2021 – May 2025</p>
-                </div>
-              </div>
+              <EducationBlock
+                img="/images/vandy.png"
+                school="Vanderbilt University | Nashville, TN"
+                degree="B.S. Physics (Highest Honors), Computer Science, Applied Mathematics"
+                advisor="Kálmán Varga"
+                dates="August 2021 – May 2025"
+              />
 
               {/* Skills */}
               <h3 className="text-white font-semibold text-2xl mt-4">Skills</h3>
@@ -212,7 +179,9 @@ export default function Education() {
   );
 }
 
-// Skill Pill component with its own state
+// -----------------------
+// Skill Pill component
+// -----------------------
 function SkillPill({
   text,
   color,
@@ -227,20 +196,9 @@ function SkillPill({
   return (
     <span
       className={`
-        px-3 py-1
-        rounded-full
-        bg-white/10
-        text-sm
-        font-medium
-        transition-all
-        duration-300
-        ease-out
-        hover:scale-105
-        ${color}
+        px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${color}
       `}
-      style={{
-        boxShadow: hover ? `0 0 15px ${glow}` : "none",
-      }}
+      style={{ boxShadow: hover ? `0 0 15px ${glow}` : "none" }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -249,7 +207,44 @@ function SkillPill({
   );
 }
 
+// -----------------------
+// Education Block
+// -----------------------
+function EducationBlock({
+  img,
+  school,
+  degree,
+  advisor,
+  dates,
+}: {
+  img: string;
+  school: string;
+  degree: string;
+  advisor: string;
+  dates: string;
+}) {
+  return (
+    <div className="flex items-start space-x-4">
+      <Image
+        src={img}
+        alt={school}
+        width={140}
+        height={140}
+        className="object-contain"
+      />
+      <div>
+        <h3 className="text-white font-semibold text-xl">{school}</h3>
+        <p>{degree}</p>
+        <p>Advisor: {advisor}</p>
+        <p>{dates}</p>
+      </div>
+    </div>
+  );
+}
+
+// -----------------------
 // Experience component
+// -----------------------
 function Experience({
   img,
   title,
