@@ -46,7 +46,7 @@ export default function Home() {
         transition={{ duration: 1.5, ease: "easeOut" }}
         className="
           pointer-events-auto
-          w-1/2
+          w-6/10
           rounded-3xl
           bg-white/10
           backdrop-blur-xl
