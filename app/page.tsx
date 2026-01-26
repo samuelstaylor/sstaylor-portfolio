@@ -9,31 +9,37 @@ export default function Home() {
       text: "Computational Nanoscience",
       color: "text-emerald-400",
       glow: "#34D399",
+      url: "https://www.nature.com/subjects/computational-nanotechnology",
     },
     {
       text: "Non-Adiabatic Dynamics",
       color: "text-cyan-400",
       glow: "#22D3EE",
+      url: "https://doi.org/10.1063/1.4757762",
     },
     {
       text: "Light-Matter Interactions",
       color: "text-violet-400",
       glow: "#A78BFA",
+      url: "https://doi.org/10.1038/s42254-021-00306-5",
     },
     {
       text: "Quantum Materials",
       color: "text-indigo-400",
       glow: "#818CF8",
+      url: "https://en.wikipedia.org/wiki/Quantum_materials",
     },
     {
-      text: "TDDFT Simulations",
+      text: "Ab initio Simulations",
       color: "text-pink-400",
       glow: "#F472B6",
+      url: "https://en.wikipedia.org/wiki/Ab_initio_quantum_chemistry_methods",
     },
     {
       text: "3D Scientific Visualization",
       color: "text-orange-400",
       glow: "#FB923C",
+      url: "https://en.wikipedia.org/wiki/Scientific_visualization",
     },
   ];
 
@@ -73,8 +79,11 @@ export default function Home() {
             const [hover, setHover] = useState(false);
 
             return (
-              <span
+              <a
                 key={keyword.text}
+                href={keyword.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${keyword.color}`}
                 style={{
                   boxShadow: hover ? `0 0 15px ${keyword.glow}` : "none",
@@ -83,7 +92,7 @@ export default function Home() {
                 onMouseLeave={() => setHover(false)}
               >
                 {keyword.text}
-              </span>
+              </a>
             );
           })}
         </div>
