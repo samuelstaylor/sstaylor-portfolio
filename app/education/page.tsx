@@ -12,22 +12,78 @@ export default function Education() {
   const minimizedHeight = 56;
 
   const skills = [
-    { text: "Python", color: "text-emerald-400", glow: "#34D399" },
-    { text: "C++", color: "text-cyan-400", glow: "#22D3EE" },
-    { text: "Fortran", color: "text-violet-400", glow: "#A78BFA" },
-    { text: "TDDFT / DFT", color: "text-pink-400", glow: "#F472B6" },
-    { text: "CUDA & OpenMP", color: "text-orange-400", glow: "#FB923C" },
-    { text: "Quantum Espresso", color: "text-indigo-400", glow: "#818CF8" },
-    { text: "WEST", color: "text-emerald-400", glow: "#34D399" },
-    { text: "SALMON", color: "text-cyan-400", glow: "#22D3EE" },
+    {
+      text: "Python",
+      color: "text-emerald-400",
+      glow: "#34D399",
+      url: "https://www.python.org/",
+    },
+    {
+      text: "C++",
+      color: "text-cyan-400",
+      glow: "#22D3EE",
+      url: "https://isocpp.org/",
+    },
+    {
+      text: "Fortran",
+      color: "text-violet-400",
+      glow: "#A78BFA",
+      url: "https://fortran-lang.org/",
+    },
+    {
+      text: "TDDFT / DFT",
+      color: "text-pink-400",
+      glow: "#F472B6",
+      url: "https://en.wikipedia.org/wiki/Time-dependent_density_functional_theory",
+    },
+    {
+      text: "CUDA & OpenMP",
+      color: "text-orange-400",
+      glow: "#FB923C",
+      url: "https://developer.nvidia.com/cuda-zone",
+    },
+    {
+      text: "Quantum Espresso",
+      color: "text-indigo-400",
+      glow: "#818CF8",
+      url: "https://www.quantum-espresso.org/",
+    },
+    {
+      text: "WEST",
+      color: "text-emerald-400",
+      glow: "#34D399",
+      url: "https://west-code.org/",
+    },
+    {
+      text: "SALMON",
+      color: "text-cyan-400",
+      glow: "#22D3EE",
+      url: "https://salmon-tddft.jp/",
+    },
     {
       text: "Scientific Visualization",
       color: "text-violet-400",
       glow: "#A78BFA",
+      url: "https://en.wikipedia.org/wiki/Scientific_visualization",
     },
-    { text: "Blender", color: "text-orange-400", glow: "#FB923C" },
-    { text: "React / Three.js", color: "text-pink-400", glow: "#F472B6" },
-    { text: "Machine Learning", color: "text-indigo-400", glow: "#818CF8" },
+    {
+      text: "Blender",
+      color: "text-orange-400",
+      glow: "#FB923C",
+      url: "https://www.blender.org/",
+    },
+    {
+      text: "React / Three.js",
+      color: "text-pink-400",
+      glow: "#F472B6",
+      url: "https://reactjs.org/",
+    },
+    {
+      text: "Machine Learning",
+      color: "text-indigo-400",
+      glow: "#818CF8",
+      url: "https://en.wikipedia.org/wiki/Machine_learning",
+    },
   ];
 
   return (
@@ -49,8 +105,13 @@ export default function Education() {
         }}
         className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
       >
-        {/* Frosted glass behind content */}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-xl z-0 pointer-events-none"></div>
+        {/* Frosted glass overlay with fade-in */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="absolute inset-0 bg-white/10 backdrop-blur-xl z-0 pointer-events-none"
+        />
 
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-3 h-14 relative z-10">
@@ -115,6 +176,7 @@ export default function Education() {
                     text={skill.text}
                     color={skill.color}
                     glow={skill.glow}
+                    url={skill.url}
                   />
                 ))}
               </div>
@@ -186,24 +248,28 @@ function SkillPill({
   text,
   color,
   glow,
+  url,
 }: {
   text: string;
   color: string;
   glow: string;
+  url: string;
 }) {
   const [hover, setHover] = useState(false);
 
   return (
-    <span
-      className={`
-        px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${color}
-      `}
-      style={{ boxShadow: hover ? `0 0 15px ${glow}` : "none" }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      {text}
-    </span>
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      <span
+        className={`
+          px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${color}
+        `}
+        style={{ boxShadow: hover ? `0 0 15px ${glow}` : "none" }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        {text}
+      </span>
+    </a>
   );
 }
 
