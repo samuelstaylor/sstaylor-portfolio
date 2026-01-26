@@ -6,6 +6,10 @@ import Image from "next/image";
 
 export default function Contact() {
   const [minimized, setMinimized] = useState(false);
+  const openWidth = "25vw";
+  const minimizedWidth = 300; // keeps title on one line
+  const openHeight = "auto";
+  const minimizedHeight = 56;
 
   return (
     <motion.div
@@ -18,21 +22,14 @@ export default function Contact() {
       className="pointer-events-auto fixed top-24 right-16 z-50 cursor-grab"
     >
       <motion.div
+        initial={{ width: openWidth, height: openHeight }}
         animate={{
-          width: minimized ? 200 : "25vw",
-          height: minimized ? 56 : "auto",
+          width: minimized ? minimizedWidth : openWidth,
+          height: minimized ? minimizedHeight : openHeight,
           transition: { duration: 0.5, ease: "easeInOut" },
         }}
-        className="
-          rounded-2xl
-          bg-white/10 backdrop-blur-xl
-          border border-white/20
-          shadow-2xl
-          overflow-hidden
-          relative
-        "
+        className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl overflow-hidden relative"
       >
-        {/* Header: always visible */}
         <div className="flex justify-between items-center px-4 py-2 h-14">
           <h2 className="text-white font-bold text-4xl select-none">Contact</h2>
           <button
@@ -44,7 +41,6 @@ export default function Contact() {
           </button>
         </div>
 
-        {/* Content */}
         <AnimatePresence>
           {!minimized && (
             <motion.div
