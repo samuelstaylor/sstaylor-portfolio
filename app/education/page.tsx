@@ -105,11 +105,11 @@ export default function Education() {
         }}
         className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
       >
-        {/* Frosted glass overlay with fade-in */}
+        {/* Frosted glass overlay with delayed fade-in */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut", delay: 1.25 }}
           className="absolute inset-0 bg-white/10 backdrop-blur-xl z-0 pointer-events-none"
         />
 
@@ -138,7 +138,6 @@ export default function Education() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
-              {/* CV Link */}
               <p>
                 <a
                   href="/pdf/cv.pdf"
@@ -150,7 +149,6 @@ export default function Education() {
                 </a>
               </p>
 
-              {/* Education */}
               <EducationBlock
                 img="/images/uchicago.png"
                 school="University of Chicago | Chicago, IL"
@@ -167,21 +165,13 @@ export default function Education() {
                 dates="August 2021 – May 2025"
               />
 
-              {/* Skills */}
               <h3 className="text-white font-semibold text-2xl mt-4">Skills</h3>
               <div className="flex flex-wrap gap-3">
                 {skills.map((skill) => (
-                  <SkillPill
-                    key={skill.text}
-                    text={skill.text}
-                    color={skill.color}
-                    glow={skill.glow}
-                    url={skill.url}
-                  />
+                  <SkillPill key={skill.text} {...skill} />
                 ))}
               </div>
 
-              {/* Research Experiences */}
               <h3 className="text-white font-semibold text-2xl mt-4">
                 Research Experiences
               </h3>
@@ -260,9 +250,7 @@ function SkillPill({
   return (
     <a href={url} target="_blank" rel="noopener noreferrer">
       <span
-        className={`
-          px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${color}
-        `}
+        className={`px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${color}`}
         style={{ boxShadow: hover ? `0 0 15px ${glow}` : "none" }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
