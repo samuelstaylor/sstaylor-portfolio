@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 export default function Bio() {
@@ -12,19 +12,20 @@ export default function Bio() {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
-  const openWidth = "55vw";
+  const rotationIntervalRef = useRef<NodeJS.Timer | null>(null);
+
+  const openWidth = "55vw"; // 55vw default
   const minimizedWidth = 140;
   const openHeight = "auto";
   const minimizedHeight = 56;
 
   const galleryImages = [
-    { src: "/images/sam-full-selfie.jpeg", caption: "At the University lab" },
-    { src: "/images/sam-scout.jpg", caption: "With Scout on the farm" },
     { src: "/images/sam-presentation.jpg", caption: "Presenting at ELI-ALPS" },
     {
       src: "/images/sam-ce-lab.jpg",
       caption: "Ultrafast dynamics lab at ELI-ALPS",
     },
+    { src: "/images/sam-farm.jpg", caption: "On the farm" },
     { src: "/images/sam-disney.jpg", caption: "Disney world with my brother!" },
   ];
 
@@ -45,40 +46,47 @@ export default function Bio() {
     setIsGalleryOpen(true);
   };
 
+  // Auto-rotate helpers
+  const resetAutoRotate = () => {
+    if (rotationIntervalRef.current) clearInterval(rotationIntervalRef.current);
+
+    if (minimized || isGalleryOpen) return;
+
+    rotationIntervalRef.current = setInterval(() => {
+      setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
+    }, 4000);
+  };
+
   const nextImage = () => {
     setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
+    resetAutoRotate();
   };
 
   const prevImage = () => {
     setGalleryIndex(
       (prev) => (prev - 1 + galleryImages.length) % galleryImages.length
     );
+    resetAutoRotate();
   };
 
-  // Auto-rotate gallery (only when not minimized AND not open in modal)
+  // Initial auto-rotate
   useEffect(() => {
-    if (minimized || isGalleryOpen) return;
-
-    const interval = setInterval(() => {
-      setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
+    resetAutoRotate();
+    return () => {
+      if (rotationIntervalRef.current)
+        clearInterval(rotationIntervalRef.current);
+    };
   }, [minimized, isGalleryOpen]);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-
+      if (e.key === "Escape") closeModal();
       if (isGalleryOpen) {
         if (e.key === "ArrowRight") nextImage();
         if (e.key === "ArrowLeft") prevImage();
       }
     };
-
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [isGalleryOpen]);
@@ -86,7 +94,6 @@ export default function Bio() {
   const linkClass =
     "text-emerald-300 hover:text-emerald-400 underline decoration-emerald-500/50 hover:decoration-emerald-400 transition-colors duration-300";
 
-  // Helpers for overlapping carousel
   const getIndex = (offset: number) => {
     return (
       (galleryIndex + offset + galleryImages.length) % galleryImages.length
@@ -206,116 +213,76 @@ export default function Bio() {
                 </p>
 
                 {/* Overlapping Carousel Gallery */}
-                <div className="mt-12">
-                  <h3 className="text-white font-semibold text-2xl mt-4">
+                <div className="mt-12 w-full flex flex-col items-start">
+                  <h3 className="text-white font-semibold text-2xl mb-1">
                     Gallery
                   </h3>
+                  <p className="text-white/70 text-sm mb-4 max-w-[90%]">
+                    Here are some photos I have chosen that capture my life,
+                    interests, and personality!
+                  </p>
 
-                  <div className="relative w-full h-[320px] flex items-center justify-center">
-                    {/* Left Image */}
-                    <motion.div
-                      key={getIndex(-1)}
-                      className="absolute cursor-pointer"
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        x: -220,
-                        scale: 0.8,
-                        opacity: 0.5,
-                        zIndex: 1,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 120,
-                        damping: 18,
-                        mass: 0.8,
-                      }}
-                      onClick={prevImage}
-                    >
-                      <Image
-                        src={galleryImages[getIndex(-1)].src}
-                        alt=""
-                        width={220}
-                        height={280}
-                        className="rounded-xl border border-white/20 shadow-lg"
-                      />
-                    </motion.div>
+                  <div className="relative w-full min-h-[360px] flex items-center justify-center">
+                    <AnimatePresence initial={false}>
+                      {galleryImages.map((img, idx) => {
+                        const offset =
+                          (idx - galleryIndex + galleryImages.length) %
+                          galleryImages.length;
+                        const isVisible =
+                          offset === 0 ||
+                          offset === 1 ||
+                          offset === galleryImages.length - 1;
+                        const isCenter = offset === 0;
 
-                    {/* Center Image */}
-                    <motion.div
-                      key={galleryIndex}
-                      className="absolute cursor-pointer"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{
-                        x: 0,
-                        scale: 1,
-                        opacity: 1,
-                        zIndex: 2,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 120,
-                        damping: 18,
-                        mass: 0.8,
-                      }}
-                      onClick={() => openGallery(galleryIndex)}
-                    >
-                      <Image
-                        src={galleryImages[galleryIndex].src}
-                        alt={galleryImages[galleryIndex].caption}
-                        width={260}
-                        height={320}
-                        className="rounded-2xl border border-white/30 shadow-2xl"
-                      />
-                      <div className="text-center mt-3 text-white text-sm">
-                        {galleryImages[galleryIndex].caption}
-                      </div>
-                    </motion.div>
+                        if (!isVisible) return null;
 
-                    {/* Right Image */}
-                    <motion.div
-                      key={getIndex(1)}
-                      className="absolute cursor-pointer"
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        x: 220,
-                        scale: 0.8,
-                        opacity: 0.5,
-                        zIndex: 1,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 120,
-                        damping: 18,
-                        mass: 0.8,
-                      }}
-                      onClick={nextImage}
-                    >
-                      <Image
-                        src={galleryImages[getIndex(1)].src}
-                        alt=""
-                        width={220}
-                        height={280}
-                        className="rounded-xl border border-white/20 shadow-lg"
-                      />
-                    </motion.div>
+                        const xOffset =
+                          offset === 0 ? 0 : offset === 1 ? 220 : -220;
+                        const scale = isCenter ? 1 : 0.8;
+                        const opacity = isCenter ? 1 : 0.5;
 
-                    {/* Arrows */}
-                    {isGalleryOpen && (
-                      <button
-                        className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400 transition-colors"
-                        onClick={prevImage}
-                      >
-                        ‹
-                      </button>
-                    )}
-                    {isGalleryOpen && (
-                      <button
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400 transition-colors"
-                        onClick={nextImage}
-                      >
-                        ›
-                      </button>
-                    )}
+                        return (
+                          <motion.div
+                            key={img.src}
+                            initial={{ x: xOffset, opacity: 0, scale: scale }}
+                            animate={{
+                              x: xOffset,
+                              opacity: opacity,
+                              scale: scale,
+                            }}
+                            exit={{ x: xOffset, opacity: 0, scale: scale }}
+                            transition={{ duration: 0.6, ease: "easeInOut" }}
+                            className="absolute flex flex-col items-center cursor-pointer"
+                            onClick={() => {
+                              if (isCenter) {
+                                openGallery(idx);
+                              } else {
+                                // Calculate relative offset
+                                const relOffset =
+                                  (idx - galleryIndex + galleryImages.length) %
+                                  galleryImages.length;
+                                if (relOffset === 1) nextImage();
+                                if (relOffset === galleryImages.length - 1)
+                                  prevImage();
+                              }
+                            }}
+                          >
+                            <Image
+                              src={img.src}
+                              alt={img.caption}
+                              width={isCenter ? 260 : 220}
+                              height={isCenter ? 320 : 280}
+                              className="rounded-2xl border border-white/30 shadow-2xl object-contain max-h-[320px]"
+                            />
+                            {isCenter && (
+                              <div className="mt-2 text-white text-sm text-center max-w-[260px]">
+                                {img.caption}
+                              </div>
+                            )}
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
                   </div>
                 </div>
               </motion.div>
@@ -338,18 +305,9 @@ export default function Bio() {
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
-              className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh]"
+              className="relative flex flex-col items-center justify-center max-w-[90vw] max-h-[90vh] overflow-auto p-4 scrollbar-theme"
               onClick={(e) => e.stopPropagation()}
             >
-              {isGalleryOpen && (
-                <button
-                  className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400"
-                  onClick={prevImage}
-                >
-                  ‹
-                </button>
-              )}
-
               <Image
                 src={
                   isGalleryOpen
@@ -363,12 +321,9 @@ export default function Bio() {
               />
 
               {isGalleryOpen && (
-                <button
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400"
-                  onClick={nextImage}
-                >
-                  ›
-                </button>
+                <div className="mt-4 text-white text-base text-center max-w-[80vw] px-4">
+                  {galleryImages[galleryIndex].caption}
+                </div>
               )}
             </motion.div>
           </motion.div>
