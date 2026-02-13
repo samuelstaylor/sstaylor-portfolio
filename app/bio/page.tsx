@@ -17,19 +17,19 @@ export default function Bio() {
   const openHeight = "auto";
   const minimizedHeight = 56;
 
-  // Gallery images with captions
   const galleryImages = [
     { src: "/images/sam-full-selfie.jpeg", caption: "At the University lab" },
     { src: "/images/sam-scout.jpg", caption: "With Scout on the farm" },
+    { src: "/images/sam-presentation.jpg", caption: "Presenting at ELI-ALPS" },
     {
-      src: "/images/sam-conference.jpeg",
-      caption: "Presenting at a conference",
+      src: "/images/sam-ce-lab.jpg",
+      caption: "Ultrafast dynamics lab at ELI-ALPS",
     },
-    { src: "/images/sam-3dwork.jpeg", caption: "Working on 3D visualizations" },
-    // Add more images here
+    { src: "/images/sam-disney.jpg", caption: "Disney world with my brother!" },
   ];
 
   const handleImageClick = (src: string) => {
+    setIsGalleryOpen(false); // <-- FORCE gallery mode off
     setModalImageSrc(src);
     setIsModalOpen(true);
   };
@@ -46,30 +46,52 @@ export default function Bio() {
   };
 
   const nextImage = () => {
-    setGalleryIndex((galleryIndex + 1) % galleryImages.length);
+    setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
   };
 
   const prevImage = () => {
     setGalleryIndex(
-      (galleryIndex - 1 + galleryImages.length) % galleryImages.length
+      (prev) => (prev - 1 + galleryImages.length) % galleryImages.length
     );
   };
+
+  // Auto-rotate gallery (only when not minimized AND not open in modal)
+  useEffect(() => {
+    if (minimized || isGalleryOpen) return;
+
+    const interval = setInterval(() => {
+      setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [minimized, isGalleryOpen]);
 
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+
       if (isGalleryOpen) {
         if (e.key === "ArrowRight") nextImage();
         if (e.key === "ArrowLeft") prevImage();
-        if (e.key === "Escape") closeModal();
       }
     };
+
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [galleryIndex, isGalleryOpen]);
+  }, [isGalleryOpen]);
 
   const linkClass =
     "text-emerald-300 hover:text-emerald-400 underline decoration-emerald-500/50 hover:decoration-emerald-400 transition-colors duration-300";
+
+  // Helpers for overlapping carousel
+  const getIndex = (offset: number) => {
+    return (
+      (galleryIndex + offset + galleryImages.length) % galleryImages.length
+    );
+  };
 
   return (
     <>
@@ -93,7 +115,6 @@ export default function Bio() {
           }}
           className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
         >
-          {/* Frosted glass overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -113,13 +134,11 @@ export default function Bio() {
             <button
               onClick={() => setMinimized(!minimized)}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white font-bold transition-colors duration-300 relative z-10"
-              aria-label={minimized ? "Maximize" : "Minimize"}
             >
               {minimized ? "+" : "-"}
             </button>
           </motion.div>
 
-          {/* Content */}
           <AnimatePresence>
             {!minimized && (
               <motion.div
@@ -127,7 +146,7 @@ export default function Bio() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                transition={{ duration: 0.5 }}
                 className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
               >
                 <Image
@@ -142,32 +161,20 @@ export default function Bio() {
                 />
 
                 <p>
-                  I am Samuel Taylor, a Ph.D. student at the{" "}
-                  <a
-                    href="https://quantum.uchicago.edu/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={linkClass}
-                  >
-                    University of Chicago
-                  </a>
-                  , researching quantum science and engineering in the{" "}
-                  <a
-                    href="https://galligroup.uchicago.edu/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={linkClass}
-                  >
-                    Galli Group
-                  </a>
-                  . I focus on computational modeling of light-matter
-                  interactions, non-adiabatic dynamics, and quantum materials. I
-                  focus on computational modeling of light-matter interactions,
-                  non-adiabatic dynamics, and quantum materials. I focus on
-                  computational modeling of light-matter interactions,
-                  non-adiabatic dynamics, and quantum materials. I focus on
-                  computational modeling of light-matter interactions,
-                  non-adiabatic dynamics, and quantum materials.
+                  I am Samuel Taylor, a Ph.D. student at the University of
+                  Chicago, researching quantum science and engineering in the
+                  Galli Group. I am Samuel Taylor, a Ph.D. student at the
+                  University of Chicago, researching quantum science and
+                  engineering in the Galli Group. I am Samuel Taylor, a Ph.D.
+                  student at the University of Chicago, researching quantum
+                  science and engineering in the Galli Group. I am Samuel
+                  Taylor, a Ph.D. student at the University of Chicago,
+                  researching quantum science and engineering in the Galli
+                  Group. I am Samuel Taylor, a Ph.D. student at the University
+                  of Chicago, researching quantum science and engineering in the
+                  Galli Group. I am Samuel Taylor, a Ph.D. student at the
+                  University of Chicago, researching quantum science and
+                  engineering in the Galli Group.
                 </p>
 
                 <Image
@@ -188,33 +195,127 @@ export default function Bio() {
                   Hampshire, Illinois, and I am passionate about making STEM
                   research accessible and collaborative. I grew up on a small
                   farm in Hampshire, Illinois, and I am passionate about making
-                  STEM research accessible and collaborative.
+                  STEM research accessible and collaborative. I grew up on a
+                  small farm in Hampshire, Illinois, and I am passionate about
+                  making STEM research accessible and collaborative. I grew up
+                  on a small farm in Hampshire, Illinois, and I am passionate
+                  about making STEM research accessible and collaborative. I
+                  grew up on a small farm in Hampshire, Illinois, and I am
+                  passionate about making STEM research accessible and
+                  collaborative.
                 </p>
 
-                {/* Gallery Section */}
-                <div className="mt-8">
-                  <h3 className="text-white font-semibold text-2xl mb-4">
+                {/* Overlapping Carousel Gallery */}
+                <div className="mt-12">
+                  <h3 className="text-white font-semibold text-2xl mt-4">
                     Gallery
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {galleryImages.map((img, idx) => (
-                      <div
-                        key={idx}
-                        className="cursor-pointer relative group rounded-md overflow-hidden border border-white/20 shadow-md"
-                        onClick={() => openGallery(idx)}
-                      >
-                        <Image
-                          src={img.src}
-                          alt={img.caption}
-                          width={200}
-                          height={200}
-                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-1 text-center">
-                          {img.caption}
-                        </div>
+
+                  <div className="relative w-full h-[320px] flex items-center justify-center">
+                    {/* Left Image */}
+                    <motion.div
+                      key={getIndex(-1)}
+                      className="absolute cursor-pointer"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        x: -220,
+                        scale: 0.8,
+                        opacity: 0.5,
+                        zIndex: 1,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 18,
+                        mass: 0.8,
+                      }}
+                      onClick={prevImage}
+                    >
+                      <Image
+                        src={galleryImages[getIndex(-1)].src}
+                        alt=""
+                        width={220}
+                        height={280}
+                        className="rounded-xl border border-white/20 shadow-lg"
+                      />
+                    </motion.div>
+
+                    {/* Center Image */}
+                    <motion.div
+                      key={galleryIndex}
+                      className="absolute cursor-pointer"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{
+                        x: 0,
+                        scale: 1,
+                        opacity: 1,
+                        zIndex: 2,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 18,
+                        mass: 0.8,
+                      }}
+                      onClick={() => openGallery(galleryIndex)}
+                    >
+                      <Image
+                        src={galleryImages[galleryIndex].src}
+                        alt={galleryImages[galleryIndex].caption}
+                        width={260}
+                        height={320}
+                        className="rounded-2xl border border-white/30 shadow-2xl"
+                      />
+                      <div className="text-center mt-3 text-white text-sm">
+                        {galleryImages[galleryIndex].caption}
                       </div>
-                    ))}
+                    </motion.div>
+
+                    {/* Right Image */}
+                    <motion.div
+                      key={getIndex(1)}
+                      className="absolute cursor-pointer"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        x: 220,
+                        scale: 0.8,
+                        opacity: 0.5,
+                        zIndex: 1,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 18,
+                        mass: 0.8,
+                      }}
+                      onClick={nextImage}
+                    >
+                      <Image
+                        src={galleryImages[getIndex(1)].src}
+                        alt=""
+                        width={220}
+                        height={280}
+                        className="rounded-xl border border-white/20 shadow-lg"
+                      />
+                    </motion.div>
+
+                    {/* Arrows */}
+                    {isGalleryOpen && (
+                      <button
+                        className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400 transition-colors"
+                        onClick={prevImage}
+                      >
+                        ‹
+                      </button>
+                    )}
+                    {isGalleryOpen && (
+                      <button
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400 transition-colors"
+                        onClick={nextImage}
+                      >
+                        ›
+                      </button>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -223,7 +324,7 @@ export default function Bio() {
         </motion.div>
       </motion.div>
 
-      {/* Modal for enlarged image / gallery */}
+      {/* Modal */}
       <AnimatePresence>
         {(isModalOpen || isGalleryOpen) && (
           <motion.div
@@ -240,35 +341,34 @@ export default function Bio() {
               className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh]"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold z-10 hover:text-emerald-400 transition-colors"
-                onClick={prevImage}
-              >
-                ‹
-              </button>
+              {isGalleryOpen && (
+                <button
+                  className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400"
+                  onClick={prevImage}
+                >
+                  ‹
+                </button>
+              )}
+
               <Image
                 src={
                   isGalleryOpen
                     ? galleryImages[galleryIndex].src
                     : modalImageSrc
                 }
-                alt={
-                  isGalleryOpen ? galleryImages[galleryIndex].caption : "Image"
-                }
+                alt="Image"
                 width={800}
                 height={1000}
                 className="rounded-md object-contain max-h-[80vh]"
               />
-              <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold z-10 hover:text-emerald-400 transition-colors"
-                onClick={nextImage}
-              >
-                ›
-              </button>
+
               {isGalleryOpen && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/40 px-4 py-1 rounded-md text-center">
-                  {galleryImages[galleryIndex].caption}
-                </div>
+                <button
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold hover:text-emerald-400"
+                  onClick={nextImage}
+                >
+                  ›
+                </button>
               )}
             </motion.div>
           </motion.div>
