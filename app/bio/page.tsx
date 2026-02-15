@@ -16,7 +16,7 @@ export default function Bio() {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState("");
 
-  const rotationIntervalRef = useRef<NodeJS.Timer | null>(null);
+  const rotationIntervalRef = useRef<number | null>(null);
 
   const openWidth = "55vw"; // 55vw default
   const minimizedWidth = 140;
@@ -49,9 +49,10 @@ export default function Bio() {
   };
 
   const resetAutoRotate = () => {
-    if (rotationIntervalRef.current) clearInterval(rotationIntervalRef.current);
+    if (rotationIntervalRef.current !== null)
+      clearInterval(rotationIntervalRef.current);
     if (minimized || isGalleryOpen) return;
-    rotationIntervalRef.current = setInterval(() => {
+    rotationIntervalRef.current = window.setInterval(() => {
       setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
     }, 4000);
   };
@@ -71,7 +72,7 @@ export default function Bio() {
   useEffect(() => {
     resetAutoRotate();
     return () => {
-      if (rotationIntervalRef.current)
+      if (rotationIntervalRef.current !== null)
         clearInterval(rotationIntervalRef.current);
     };
   }, [minimized, isGalleryOpen]);
