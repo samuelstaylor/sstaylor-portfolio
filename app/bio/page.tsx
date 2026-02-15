@@ -7,10 +7,14 @@ import Image from "next/image";
 export default function Bio() {
   const [minimized, setMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImageSrc, setModalImageSrc] = useState("");
-  const [galleryIndex, setGalleryIndex] = useState(0);
+
+  // Gallery modal state
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+
+  // Non-gallery modal state
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState("");
 
   const rotationIntervalRef = useRef<NodeJS.Timer | null>(null);
 
@@ -29,29 +33,24 @@ export default function Bio() {
     { src: "/images/sam-disney.jpg", caption: "Disney world with my brother!" },
   ];
 
-  const handleImageClick = (src: string) => {
-    setIsGalleryOpen(false); // <-- FORCE gallery mode off
-    setModalImageSrc(src);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalImageSrc("");
-    setIsGalleryOpen(false);
-  };
-
   const openGallery = (index: number) => {
     setGalleryIndex(index);
     setIsGalleryOpen(true);
   };
 
-  // Auto-rotate helpers
+  const openImageModal = (src: string) => {
+    setModalImageSrc(src);
+    setIsImageModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsGalleryOpen(false);
+    setIsImageModalOpen(false);
+  };
+
   const resetAutoRotate = () => {
     if (rotationIntervalRef.current) clearInterval(rotationIntervalRef.current);
-
     if (minimized || isGalleryOpen) return;
-
     rotationIntervalRef.current = setInterval(() => {
       setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
     }, 4000);
@@ -69,7 +68,6 @@ export default function Bio() {
     resetAutoRotate();
   };
 
-  // Initial auto-rotate
   useEffect(() => {
     resetAutoRotate();
     return () => {
@@ -78,7 +76,6 @@ export default function Bio() {
     };
   }, [minimized, isGalleryOpen]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeModal();
@@ -90,15 +87,6 @@ export default function Bio() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [isGalleryOpen]);
-
-  const linkClass =
-    "text-emerald-300 hover:text-emerald-400 underline decoration-emerald-500/50 hover:decoration-emerald-400 transition-colors duration-300";
-
-  const getIndex = (offset: number) => {
-    return (
-      (galleryIndex + offset + galleryImages.length) % galleryImages.length
-    );
-  };
 
   return (
     <>
@@ -156,32 +144,63 @@ export default function Bio() {
                 transition={{ duration: 0.5 }}
                 className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
               >
+                {/* Non-gallery images */}
                 <Image
                   src="/images/sam-full-selfie.jpeg"
                   alt="Samuel Taylor"
                   width={140}
                   height={180}
                   className="float-left w-[140px] h-[180px] mr-4 mb-4 rounded-md border border-white/20 shadow-md cursor-pointer"
-                  onClick={() =>
-                    handleImageClick("/images/sam-full-selfie.jpeg")
-                  }
+                  onClick={() => openImageModal("/images/sam-full-selfie.jpeg")}
                 />
 
-                <p>
-                  I am Samuel Taylor, a Ph.D. student at the University of
-                  Chicago, researching quantum science and engineering in the
-                  Galli Group. I am Samuel Taylor, a Ph.D. student at the
-                  University of Chicago, researching quantum science and
-                  engineering in the Galli Group. I am Samuel Taylor, a Ph.D.
-                  student at the University of Chicago, researching quantum
-                  science and engineering in the Galli Group. I am Samuel
-                  Taylor, a Ph.D. student at the University of Chicago,
-                  researching quantum science and engineering in the Galli
-                  Group. I am Samuel Taylor, a Ph.D. student at the University
-                  of Chicago, researching quantum science and engineering in the
-                  Galli Group. I am Samuel Taylor, a Ph.D. student at the
-                  University of Chicago, researching quantum science and
-                  engineering in the Galli Group.
+                <p className="text-white/80 text-base leading-relaxed">
+                  Hi, I’m Samuel Taylor! I’m currently a{" "}
+                  <a
+                    href="https://www.uchicago.edu"
+                    className="font-bold underline text-indigo-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
+                  >
+                    Ph.D. student at the University of Chicago
+                  </a>
+                  , where I study{" "}
+                  <a
+                    href="https://www.nature.com/subjects/computational-nanotechnology"
+                    className="font-bold underline text-emerald-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#34D399]"
+                  >
+                    Computational Nanoscience
+                  </a>
+                  ,{" "}
+                  <a
+                    href="https://doi.org/10.1063/1.4757762"
+                    className="font-bold underline text-cyan-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#22D3EE]"
+                  >
+                    Non-Adiabatic Dynamics
+                  </a>
+                  , and{" "}
+                  <a
+                    href="https://doi.org/10.1038/s42254-021-00306-5"
+                    className="font-bold underline text-indigo-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#A78BFA]"
+                  >
+                    Light–Matter Interactions
+                  </a>
+                  . I grew up in{" "}
+                  <a
+                    href="https://www.hampshireil.org/"
+                    className="font-bold underline text-violet-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#FB923C]"
+                  >
+                    Hampshire, Illinois
+                  </a>
+                  , and my journey from a small farm to advanced quantum
+                  simulations has fueled my passion for exploring{" "}
+                  <a
+                    href="https://en.wikipedia.org/wiki/Quantum_materials"
+                    className="font-bold underline text-orange-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
+                  >
+                    Quantum Materials
+                  </a>{" "}
+                  with curiosity and code. Outside the lab, I love jazz
+                  saxophone, mentoring students, and finding ways to make
+                  complex science approachable and fun.
                 </p>
 
                 <Image
@@ -190,27 +209,10 @@ export default function Bio() {
                   width={140}
                   height={180}
                   className="float-left w-[140px] h-[180px] mr-4 mb-4 rounded-md border border-white/20 shadow-md cursor-pointer"
-                  onClick={() => handleImageClick("/images/sam-scout.jpg")}
+                  onClick={() => openImageModal("/images/sam-scout.jpg")}
                 />
 
-                <p>
-                  I grew up on a small farm in Hampshire, Illinois, and I am
-                  passionate about making STEM research accessible and
-                  collaborative. I grew up on a small farm in Hampshire,
-                  Illinois, and I am passionate about making STEM research
-                  accessible and collaborative. I grew up on a small farm in
-                  Hampshire, Illinois, and I am passionate about making STEM
-                  research accessible and collaborative. I grew up on a small
-                  farm in Hampshire, Illinois, and I am passionate about making
-                  STEM research accessible and collaborative. I grew up on a
-                  small farm in Hampshire, Illinois, and I am passionate about
-                  making STEM research accessible and collaborative. I grew up
-                  on a small farm in Hampshire, Illinois, and I am passionate
-                  about making STEM research accessible and collaborative. I
-                  grew up on a small farm in Hampshire, Illinois, and I am
-                  passionate about making STEM research accessible and
-                  collaborative.
-                </p>
+                <p>I grew up on a small farm in Hampshire, Illinois...</p>
 
                 {/* Overlapping Carousel Gallery */}
                 <div className="mt-12 w-full flex flex-col items-start">
@@ -254,15 +256,10 @@ export default function Bio() {
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                             className="absolute flex flex-col items-center cursor-pointer"
                             onClick={() => {
-                              if (isCenter) {
-                                openGallery(idx);
-                              } else {
-                                // Calculate relative offset
-                                const relOffset =
-                                  (idx - galleryIndex + galleryImages.length) %
-                                  galleryImages.length;
-                                if (relOffset === 1) nextImage();
-                                if (relOffset === galleryImages.length - 1)
+                              if (isCenter) openGallery(idx);
+                              else {
+                                if (offset === 1) nextImage();
+                                if (offset === galleryImages.length - 1)
                                   prevImage();
                               }
                             }}
@@ -291,40 +288,89 @@ export default function Bio() {
         </motion.div>
       </motion.div>
 
-      {/* Modal */}
+      {/* Gallery Modal */}
       <AnimatePresence>
-        {(isModalOpen || isGalleryOpen) && (
+        {isGalleryOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-            onClick={closeModal}
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 cursor-pointer"
+            onClick={closeModal} // click anywhere closes
           >
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
-              className="relative flex flex-col items-center justify-center max-w-[90vw] max-h-[90vh] overflow-auto p-4 scrollbar-theme"
-              onClick={(e) => e.stopPropagation()}
+              className="relative flex items-center justify-center max-w-[95vw] max-h-[95vh]"
             >
+              {/* Left Arrow */}
+              <button
+                className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-4xl font-bold z-10 hover:text-emerald-400 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+              >
+                ‹
+              </button>
+
+              {/* Image */}
               <Image
-                src={
-                  isGalleryOpen
-                    ? galleryImages[galleryIndex].src
-                    : modalImageSrc
-                }
-                alt="Image"
-                width={800}
-                height={1000}
-                className="rounded-md object-contain max-h-[80vh]"
+                src={galleryImages[galleryIndex].src}
+                alt={galleryImages[galleryIndex].caption}
+                width={0}
+                height={0}
+                sizes="90vw"
+                style={{ width: "90vw", height: "auto", maxHeight: "95vh" }}
+                className="rounded-md object-contain cursor-pointer"
               />
 
-              {isGalleryOpen && (
-                <div className="mt-4 text-white text-base text-center max-w-[80vw] px-4">
-                  {galleryImages[galleryIndex].caption}
-                </div>
-              )}
+              {/* Right Arrow */}
+              <button
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-4xl font-bold z-10 hover:text-emerald-400 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+              >
+                ›
+              </button>
+
+              {/* Caption */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/40 px-4 py-1 rounded-md text-center max-w-[90vw]">
+                {galleryImages[galleryIndex].caption}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Non-gallery image modal */}
+      <AnimatePresence>
+        {isImageModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 cursor-pointer"
+            onClick={closeModal} // click anywhere closes
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="relative flex items-center justify-center max-w-[95vw] max-h-[95vh]"
+            >
+              <Image
+                src={modalImageSrc}
+                alt="Image"
+                width={0}
+                height={0}
+                sizes="90vw"
+                style={{ width: "90vw", height: "auto", maxHeight: "95vh" }}
+                className="rounded-md object-contain cursor-pointer"
+              />
             </motion.div>
           </motion.div>
         )}
