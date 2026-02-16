@@ -157,7 +157,7 @@ export default function Education() {
               </p>
 
               <EducationBlock
-                img="/images/uchicago.png"
+                img="/images/logos/uchicago.png"
                 school="University of Chicago | Chicago, IL"
                 degree="Ph.D., Quantum Science and Engineering"
                 advisor="Giulia Galli"
@@ -165,7 +165,7 @@ export default function Education() {
               />
 
               <EducationBlock
-                img="/images/vandy.png"
+                img="/images/logos/vandy.png"
                 school="Vanderbilt University | Nashville, TN"
                 degree="B.S. Physics (Highest Honors), Computer Science, Applied Mathematics"
                 advisor="Kálmán Varga"
@@ -184,7 +184,7 @@ export default function Education() {
               </h3>
 
               <Experience
-                img="/images/pme-hex.png"
+                img="/images/logos/pme-hex.png"
                 title="Pritzker School of Molecular Engineering at University of Chicago | Chicago, IL"
                 role="Ph.D. Student Researcher, PI: Dr. Giulia Galli"
                 dates="September 2025 – Present"
@@ -192,7 +192,7 @@ export default function Education() {
               />
 
               <Experience
-                img="/images/vandy-physics.jpg"
+                img="/images/logos/vandy-physics.jpg"
                 title="Vanderbilt University | Nashville, TN"
                 role="Research Assistant: Computational Nanoscience, PI: Dr. Kálmán Varga"
                 dates="August 2023 – August 2025"
@@ -200,7 +200,7 @@ export default function Education() {
               />
 
               <Experience
-                img="/images/eli-logo.jpg"
+                img="/images/logos/eli-logo.jpg"
                 title="ELI-ALPS Laser Research Institute | Szeged, Hungary"
                 role="Research Assistant: Ultrafast Dynamics / Theory & Simulation"
                 dates="May 2024 / 2025 – August 2024 / 2025"
@@ -208,7 +208,7 @@ export default function Education() {
               />
 
               <Experience
-                img="/images/vandy-cs.png"
+                img="/images/logos/vandy-cs.png"
                 title="Vanderbilt University | Nashville, TN"
                 role="Research Assistant: Computer Graphics, Numerical Methods, and Machine Learning, PI: Dr. David Hyde"
                 dates="January 2025 – May 2025"
@@ -216,7 +216,7 @@ export default function Education() {
               />
 
               <Experience
-                img="/images/tsukuba.png"
+                img="/images/logos/tsukuba.png"
                 title="University of Tsukuba | Tsukuba, Japan"
                 role="Research Assistant, PI: Dr. Kazuhiro Yabana"
                 dates="May 2023 – July 2023"
@@ -224,7 +224,7 @@ export default function Education() {
               />
 
               <Experience
-                img="/images/vandy-physics.jpg"
+                img="/images/logos/vandy-physics.jpg"
                 title="Vanderbilt University | Nashville, TN"
                 role="Research Assistant: Cosmology, PI: Dr. Robert Scherrer"
                 dates="February 2022 – May 2023"

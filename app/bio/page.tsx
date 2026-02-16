@@ -24,13 +24,29 @@ export default function Bio() {
   const minimizedHeight = 56;
 
   const galleryImages = [
+    {
+      src: "/images/castles-in-scotland.jpg",
+      caption: "Castle in the Highlands",
+    },
+    { src: "/images/sam-disney.jpg", caption: "Disney world with my brother!" },
+    { src: "/images/avatar.jpg", caption: "Zhangjiajie" },
+    { src: "/images/sam-farmer.jpg", caption: "Cow + boy" },
     { src: "/images/sam-presentation.jpg", caption: "Presenting at ELI-ALPS" },
+    { src: "/images/golden-temple.jpg", caption: "Golden temple in Kyoto" },
+    { src: "/images/sam-bela.jpg", caption: "Sam and Bela" },
+    { src: "/images/grand-epoch-city.jpg", caption: "Grand Epoch City" },
+    { src: "/images/sam-riding.jpg", caption: "Riding into the sunset" },
     {
       src: "/images/sam-ce-lab.jpg",
       caption: "Ultrafast dynamics lab at ELI-ALPS",
     },
-    { src: "/images/sam-farm.jpg", caption: "On the farm" },
-    { src: "/images/sam-disney.jpg", caption: "Disney world with my brother!" },
+
+    { src: "/images/great-wall.jpg", caption: "Great wall" },
+    { src: "/images/sam-farm.jpg", caption: "With the fam" },
+
+    { src: "/images/i-love-flowers.jpg", caption: "I love flowers" },
+    { src: "/images/baby-sam.jpg", caption: "Baby Sam!" },
+    { src: "/images/let-there-be-light.jpg", caption: "Sunrise on Mount Fuji" },
   ];
 
   const openGallery = (index: number) => {

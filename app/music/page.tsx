@@ -1,25 +1,27 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 export default function Music() {
   const [minimized, setMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImageSrc, setModalImageSrc] = useState("");
+
+  // Gallery state
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [currentGallery, setCurrentGallery] = useState<
     { src: string; caption: string }[]
   >([]);
+
+  const rotationIntervalRef = useRef<number | null>(null);
 
   const openWidth = "50vw";
   const minimizedWidth = 190;
   const openHeight = "auto";
   const minimizedHeight = 56;
 
-  // Sample YouTube links and gallery images for each section
   const jazzVideos = [
     {
       title: "Improvised Bari Sax solo -- Blair Big Band",
@@ -37,10 +39,26 @@ export default function Music() {
 
   const jazzGallery = [
     {
-      src: "/images/sam-full-selfie.jpeg",
-      caption: "Jazz Ensemble Performance",
+      src: "/images/music/band-gardens.jpg",
+      caption: "Photoshoot with the Samuel Taylor Quintet",
     },
-    { src: "/images/sam-scout.jpg", caption: "Solo Jazz Performance" },
+    {
+      src: "/images/music/bbb-ny.jpg",
+      caption: "Jack Rudin Jazz competition 2023, NYC",
+    },
+    { src: "/images/music/sax-horse1.jpg", caption: "Interest piqued" },
+    {
+      src: "/images/music/multi-instruments.jpg",
+      caption: "Many instruments, one musician",
+    },
+    { src: "/images/music/band-gig.jpg", caption: "Playing at the Jazz Bar" },
+    { src: "/images/music/sax-horse2.jpg", caption: "Happy horses" },
+    { src: "/images/music/xmas-bass.jpg", caption: "Christmas jazz bass" },
+    {
+      src: "/images/music/quintet-poster.jpg",
+      caption: "Samuel Taylor Quintet poster design",
+    },
+    { src: "/images/music/sax-horse3.jpg", caption: "Taming the wild beast" },
   ];
 
   const bagpipeVideos = [
@@ -48,8 +66,34 @@ export default function Music() {
   ];
 
   const bagpipeGallery = [
-    { src: "/images/sam-full-selfie.jpeg", caption: "Outdoor Performance" },
-    { src: "/images/sam-scout.jpg", caption: "Competition Performance" },
+    {
+      src: "/images/music/pipes-arthur-seat1.jpg",
+      caption: "Bagpipes at Arthur's Seat, Edinburgh",
+    },
+    {
+      src: "/images/music/pipes-premarch.jpg",
+      caption: "About to march the Royal Mile",
+    },
+    {
+      src: "/images/music/pipes-arthur-seat3.jpg",
+      caption: "Climbing in kilt",
+    },
+    {
+      src: "/images/music/pipes-grass-market.jpg",
+      caption: "Grassmarket, Edinburgh",
+    },
+    {
+      src: "/images/music/pipes-arthur-seat2.jpg",
+      caption: "Performing on Arthur's Seat",
+    },
+    {
+      src: "/images/music/pipes-royal-mile.jpg",
+      caption: "With the band before marching",
+    },
+    {
+      src: "/images/music/piping-competitions.jpg",
+      caption: "Dunbar competition with the band",
+    },
   ];
 
   const compositionVideos = [
@@ -59,42 +103,60 @@ export default function Music() {
     },
   ];
 
-  const handleImageClick = (
+  // ---------- Gallery Controls ----------
+  const openGalleryModal = (
     gallery: { src: string; caption: string }[],
     index: number
   ) => {
     setCurrentGallery(gallery);
     setGalleryIndex(index);
-    setIsModalOpen(true);
+    setIsGalleryOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalImageSrc("");
-  };
+  const closeModal = () => setIsGalleryOpen(false);
 
   const nextImage = () => {
-    setGalleryIndex((galleryIndex + 1) % currentGallery.length);
+    setGalleryIndex((prev) => (prev + 1) % currentGallery.length);
+    resetAutoRotate();
   };
 
   const prevImage = () => {
     setGalleryIndex(
-      (galleryIndex - 1 + currentGallery.length) % currentGallery.length
+      (prev) => (prev - 1 + currentGallery.length) % currentGallery.length
     );
+    resetAutoRotate();
+  };
+
+  const resetAutoRotate = () => {
+    if (rotationIntervalRef.current !== null)
+      clearInterval(rotationIntervalRef.current);
+    if (minimized || isGalleryOpen) return;
+    rotationIntervalRef.current = window.setInterval(() => {
+      setGalleryIndex((prev) => (prev + 1) % currentGallery.length);
+    }, 4000);
   };
 
   useEffect(() => {
+    resetAutoRotate();
+    return () => {
+      if (rotationIntervalRef.current !== null)
+        clearInterval(rotationIntervalRef.current);
+    };
+  }, [minimized, isGalleryOpen]);
+
+  useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (isModalOpen) {
+      if (e.key === "Escape") closeModal();
+      if (isGalleryOpen) {
         if (e.key === "ArrowRight") nextImage();
         if (e.key === "ArrowLeft") prevImage();
-        if (e.key === "Escape") closeModal();
       }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [galleryIndex, isModalOpen]);
+  }, [isGalleryOpen]);
 
+  // ---------- Render ----------
   return (
     <>
       <motion.div
@@ -117,7 +179,6 @@ export default function Music() {
           }}
           className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
         >
-          {/* Frosted glass overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -143,7 +204,6 @@ export default function Music() {
             </button>
           </motion.div>
 
-          {/* Content */}
           <AnimatePresence>
             {!minimized && (
               <motion.div
@@ -159,7 +219,7 @@ export default function Music() {
                   intro="I have been performing jazz for several years, playing piano and collaborating in ensembles. My experience spans improvisation, composition, and live performances."
                   videos={jazzVideos}
                   gallery={jazzGallery}
-                  onImageClick={handleImageClick}
+                  onImageClick={openGalleryModal}
                 />
 
                 <Section
@@ -167,7 +227,7 @@ export default function Music() {
                   intro="I also play the bagpipes, performing solo and in competitions. I enjoy exploring traditional tunes as well as experimental arrangements."
                   videos={bagpipeVideos}
                   gallery={bagpipeGallery}
-                  onImageClick={handleImageClick}
+                  onImageClick={openGalleryModal}
                 />
 
                 <Section
@@ -181,43 +241,52 @@ export default function Music() {
         </motion.div>
       </motion.div>
 
-      {/* Modal for enlarged image / gallery */}
+      {/* Gallery Modal */}
       <AnimatePresence>
-        {isModalOpen && (
+        {isGalleryOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 cursor-pointer"
             onClick={closeModal}
           >
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
-              className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh]"
+              className="relative flex items-center justify-center max-w-[95vw] max-h-[95vh]"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Left Arrow */}
               <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold z-10 hover:text-emerald-400 transition-colors"
+                className="absolute left-2 top-1/2 -translate-y-1/2 text-white text-4xl font-bold z-10 hover:text-emerald-400 transition-colors"
                 onClick={prevImage}
               >
                 ‹
               </button>
+
+              {/* Image */}
               <Image
                 src={currentGallery[galleryIndex].src}
                 alt={currentGallery[galleryIndex].caption}
-                width={800}
-                height={1000}
-                className="rounded-md object-contain max-h-[80vh]"
+                width={0}
+                height={0}
+                sizes="90vw"
+                style={{ width: "90vw", height: "auto", maxHeight: "95vh" }}
+                className="rounded-md object-contain cursor-pointer"
               />
+
+              {/* Right Arrow */}
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-3xl font-bold z-10 hover:text-emerald-400 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-white text-4xl font-bold z-10 hover:text-emerald-400 transition-colors"
                 onClick={nextImage}
               >
                 ›
               </button>
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/40 px-4 py-1 rounded-md text-center">
+
+              {/* Caption */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/40 px-4 py-1 rounded-md text-center max-w-[90vw]">
                 {currentGallery[galleryIndex].caption}
               </div>
             </motion.div>
@@ -227,8 +296,9 @@ export default function Music() {
     </>
   );
 }
+
 // -----------------------
-// Section Component (Intro + Videos + Gallery)
+// Section Component
 // -----------------------
 function Section({
   title,
@@ -246,6 +316,38 @@ function Section({
     index: number
   ) => void;
 }) {
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const rotationIntervalRef = useRef<number | null>(null);
+
+  const resetAutoRotate = () => {
+    if (rotationIntervalRef.current !== null)
+      clearInterval(rotationIntervalRef.current);
+    if (!gallery) return;
+    rotationIntervalRef.current = window.setInterval(() => {
+      setGalleryIndex((prev) => (prev + 1) % gallery.length);
+    }, 4000);
+  };
+
+  useEffect(() => {
+    resetAutoRotate();
+    return () => {
+      if (rotationIntervalRef.current !== null)
+        clearInterval(rotationIntervalRef.current);
+    };
+  }, [gallery]);
+
+  const nextImage = () => {
+    if (!gallery) return;
+    setGalleryIndex((prev) => (prev + 1) % gallery.length);
+    resetAutoRotate();
+  };
+
+  const prevImage = () => {
+    if (!gallery) return;
+    setGalleryIndex((prev) => (prev - 1 + gallery.length) % gallery.length);
+    resetAutoRotate();
+  };
+
   return (
     <div className="space-y-4">
       <h3 className="text-white font-semibold text-2xl">{title}</h3>
@@ -271,27 +373,52 @@ function Section({
       )}
 
       {gallery && gallery.length > 0 && (
-        <div className="space-y-2 mt-4">
-          <h4 className="text-white/70 font-semibold text-lg">Gallery</h4>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {gallery.map((img, idx) => (
-              <div
-                key={idx}
-                className="cursor-pointer relative group rounded-md overflow-hidden border border-white/20 shadow-md"
-                onClick={() => onImageClick && onImageClick(gallery, idx)}
-              >
-                <Image
-                  src={img.src}
-                  alt={img.caption}
-                  width={200}
-                  height={200}
-                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-sm p-1 text-center">
-                  {img.caption}
-                </div>
-              </div>
-            ))}
+        <div className="mt-8 w-full flex flex-col items-start">
+          <h4 className="text-white/70 font-semibold text-lg mb-1">Gallery</h4>
+          <div className="relative w-full min-h-[320px] flex items-center justify-center">
+            <AnimatePresence initial={false}>
+              {gallery.map((img, idx) => {
+                const offset =
+                  (idx - galleryIndex + gallery.length) % gallery.length;
+                const isVisible =
+                  offset === 0 || offset === 1 || offset === gallery.length - 1;
+                const isCenter = offset === 0;
+                if (!isVisible) return null;
+
+                const xOffset = offset === 0 ? 0 : offset === 1 ? 220 : -220;
+                const scale = isCenter ? 1 : 0.8;
+                const opacity = isCenter ? 1 : 0.5;
+
+                return (
+                  <motion.div
+                    key={img.src}
+                    initial={{ x: xOffset, opacity: 0, scale: scale }}
+                    animate={{ x: xOffset, opacity: opacity, scale: scale }}
+                    exit={{ x: xOffset, opacity: 0, scale: scale }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="absolute flex flex-col items-center cursor-pointer"
+                    onClick={() => {
+                      if (isCenter) onImageClick && onImageClick(gallery, idx);
+                      else if (offset === 1) nextImage();
+                      else if (offset === gallery.length - 1) prevImage();
+                    }}
+                  >
+                    <Image
+                      src={img.src}
+                      alt={img.caption}
+                      width={isCenter ? 260 : 220}
+                      height={isCenter ? 320 : 280}
+                      className="rounded-2xl border border-white/30 shadow-2xl object-contain max-h-[320px]"
+                    />
+                    {isCenter && (
+                      <div className="mt-2 text-white text-sm text-center max-w-[260px]">
+                        {img.caption}
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         </div>
       )}
