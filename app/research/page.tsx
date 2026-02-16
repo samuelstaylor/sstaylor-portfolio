@@ -2,12 +2,13 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Research() {
   const [minimized, setMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const openWidth = "50vw";
-  const minimizedWidth = 450;
+  const minimizedWidth = 240;
   const openHeight = "auto";
   const minimizedHeight = 56;
 
@@ -37,13 +38,13 @@ export default function Research() {
       url: "",
     },
     {
-      text: "TDDFT Simulations",
+      text: "First Principles Simulations",
       color: "text-orange-400",
       glow: "#FB923C",
       url: "",
     },
     {
-      text: "Coulomb Explosions",
+      text: "Material / Molecular Modeling",
       color: "text-indigo-400",
       glow: "#818CF8",
       url: "",
@@ -67,9 +68,6 @@ export default function Research() {
       url: "",
     },
   ];
-
-  const linkClass =
-    "text-emerald-300 hover:text-emerald-400 underline decoration-emerald-500/50 hover:decoration-emerald-400 transition-colors duration-300";
 
   return (
     <motion.div
@@ -129,20 +127,53 @@ export default function Research() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
-              {/* Google Scholar Link */}
+              {/* Publications Section */}
+              <h3 className="text-white font-semibold text-2xl">
+                Publications
+              </h3>
               <p>
+                For the most updated list of my publications, please visit the
+                links below:
+              </p>
+              <div className="flex flex-col space-y-2">
                 <a
                   href="https://scholar.google.com/citations?user=69Gy3HIAAAAJ&hl=en"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                  className="flex items-center space-x-2 text-emerald-300 hover:text-emerald-200 transition-colors duration-300"
                 >
-                  View Google Scholar
+                  <Image
+                    src="/images/logos/google-scholar.png"
+                    alt="Google Scholar"
+                    width={24}
+                    height={24}
+                    className="object-contain"
+                  />
+                  <span className="underline decoration-emerald-300/70 font-medium tracking-wide">
+                    Google Scholar
+                  </span>
                 </a>
-              </p>
+                <a
+                  href="https://arxiv.org/a/taylor_s_1.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 text-red-300 hover:text-red-200 transition-colors duration-300"
+                >
+                  <Image
+                    src="/images/logos/arxiv.png"
+                    alt="arXiv"
+                    width={24}
+                    height={24}
+                    className="object-contain"
+                  />
+                  <span className="underline decoration-red-300/70 font-medium tracking-wide">
+                    arXiv
+                  </span>
+                </a>
+              </div>
 
               {/* Keywords / Research Interests */}
-              <h3 className="text-white font-semibold text-2xl mt-2">
+              <h3 className="text-white font-semibold text-2xl mt-4">
                 Research Interests
               </h3>
               <div className="flex flex-wrap gap-3">

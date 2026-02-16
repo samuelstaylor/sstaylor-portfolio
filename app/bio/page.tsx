@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Bio() {
   const [minimized, setMinimized] = useState(false);
@@ -30,7 +31,6 @@ export default function Bio() {
     },
     { src: "/images/sam-disney.jpg", caption: "Disney world with my brother!" },
     { src: "/images/avatar.jpg", caption: "Zhangjiajie" },
-    { src: "/images/sam-farmer.jpg", caption: "Cow + boy" },
     { src: "/images/sam-presentation.jpg", caption: "Presenting at ELI-ALPS" },
     { src: "/images/golden-temple.jpg", caption: "Golden temple in Kyoto" },
     { src: "/images/sam-bela.jpg", caption: "Sam and Bela" },
@@ -44,7 +44,7 @@ export default function Bio() {
     { src: "/images/great-wall.jpg", caption: "Great wall" },
     { src: "/images/sam-farm.jpg", caption: "With the fam" },
 
-    { src: "/images/i-love-flowers.jpg", caption: "I love flowers" },
+    { src: "/images/i-love-flowers.jpg", caption: "I love flowers!" },
     { src: "/images/baby-sam.jpg", caption: "Baby Sam!" },
     { src: "/images/let-there-be-light.jpg", caption: "Sunrise on Mount Fuji" },
   ];
@@ -172,52 +172,53 @@ export default function Bio() {
                 />
 
                 <p className="text-white/80 text-base leading-relaxed">
-                  Hi, I’m Samuel Taylor! I’m currently a{" "}
+                  Hi, I’m Samuel Taylor! I’m an{" "}
+                  <a
+                    href=",https://www.nsfgrfp.org/"
+                    className="font-bold underline text-emerald-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
+                  >
+                    NSF GRFP Fellow
+                  </a>{" "}
+                  and Ph.D. student at the{" "}
                   <a
                     href="https://www.uchicago.edu"
-                    className="font-bold underline text-indigo-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
+                    className="font-bold underline text-red-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
                   >
-                    Ph.D. student at the University of Chicago
+                    University of Chicago
                   </a>
                   , where I study{" "}
                   <a
-                    href="https://www.nature.com/subjects/computational-nanotechnology"
-                    className="font-bold underline text-emerald-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#34D399]"
+                    href="https://pme.uchicago.edu/phd-programs/quantum-science-and-engineering"
+                    className="font-bold underline text-cyan-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#34D399]"
                   >
-                    Computational Nanoscience
+                    Quantum Science and Engineering
                   </a>
-                  ,{" "}
+                  . I’m part of the{" "}
                   <a
-                    href="https://doi.org/10.1063/1.4757762"
-                    className="font-bold underline text-cyan-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#22D3EE]"
+                    href="https://galligroup.uchicago.edu/"
+                    className="font-bold underline text-indigo-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
                   >
-                    Non-Adiabatic Dynamics
+                    Galli Group
                   </a>
-                  , and{" "}
+                  , where I develop computational methods to predict and
+                  engineer material and molecular properties. I earned my
+                  bachelor’s at{" "}
                   <a
-                    href="https://doi.org/10.1038/s42254-021-00306-5"
-                    className="font-bold underline text-indigo-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#A78BFA]"
+                    href="https://www.vanderbilt.edu/"
+                    className="font-bold underline text-yellow-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
                   >
-                    Light–Matter Interactions
+                    Vanderbilt University
                   </a>
-                  . I grew up in{" "}
-                  <a
-                    href="https://www.hampshireil.org/"
-                    className="font-bold underline text-violet-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#FB923C]"
-                  >
-                    Hampshire, Illinois
-                  </a>
-                  , and my journey from a small farm to advanced quantum
-                  simulations has fueled my passion for exploring{" "}
-                  <a
-                    href="https://en.wikipedia.org/wiki/Quantum_materials"
+                  , triple majoring in Computer Science, Physics, and
+                  Mathematics. Outside academia, I enjoy{" "}
+                  <Link
+                    href="/music/"
                     className="font-bold underline text-orange-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#818CF8]"
                   >
-                    Quantum Materials
-                  </a>{" "}
-                  with curiosity and code. Outside the lab, I love jazz
-                  saxophone, mentoring students, and finding ways to make
-                  complex science approachable and fun.
+                    music performance and composition
+                  </Link>
+                  , traveling, 3D design and engineering (hence this website
+                  😄), and learning new skills.
                 </p>
 
                 <Image
@@ -229,7 +230,16 @@ export default function Bio() {
                   onClick={() => openImageModal("/images/sam-scout.jpg")}
                 />
 
-                <p>I grew up on a small farm in Hampshire, Illinois...</p>
+                <p>
+                  I grew up on a small farm in{" "}
+                  <a
+                    href="https://www.hampshireil.org/"
+                    className="font-bold underline text-violet-400 transition-all duration-300 hover:animate-pulse hover:shadow-[0_0_10px_#FB923C]"
+                  >
+                    Hampshire, Illinois
+                  </a>
+                  .
+                </p>
 
                 {/* Overlapping Carousel Gallery */}
                 <div className="mt-12 w-full flex flex-col items-start">
@@ -237,8 +247,8 @@ export default function Bio() {
                     Gallery
                   </h3>
                   <p className="text-white/70 text-sm mb-4 max-w-[90%]">
-                    Here are some photos I have chosen that capture my life,
-                    interests, and personality!
+                    Here are some photos I have chosen that capture stories of
+                    life, interests, travels, and personality!
                   </p>
 
                   <div className="relative w-full min-h-[360px] flex items-center justify-center">
