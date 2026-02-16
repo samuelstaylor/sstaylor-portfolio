@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Projects() {
   const [minimized, setMinimized] = useState(false);
@@ -69,17 +70,24 @@ export default function Projects() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
-              {/* GitHub Link */}
-              <p>
+              {/* GitHub Link with Logo */}
+              <div>
                 <a
                   href="https://github.com/samuelstaylor"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                  className="inline-flex items-center space-x-3 text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
                 >
-                  View GitHub
+                  <Image
+                    src="/images/logos/github.png"
+                    alt="GitHub"
+                    width={26}
+                    height={26}
+                    className="object-contain"
+                  />
+                  <span>View GitHub</span>
                 </a>
-              </p>
+              </div>
 
               <p>
                 My projects explore computational nanoscience, quantum

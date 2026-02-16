@@ -150,9 +150,16 @@ export default function Education() {
                   href="/pdf/cv.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                  className="inline-flex items-center space-x-3 text-lg text-emerald-300 underline underline-offset-4 decoration-emerald-300/70 font-medium tracking-wide transition-all duration-300 hover:text-emerald-200 hover:decoration-emerald-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
                 >
-                  View CV
+                  <Image
+                    src="/images/logos/cv-icon.png"
+                    alt="CV Icon"
+                    width={26}
+                    height={26}
+                    className="object-contain"
+                  />
+                  <span>View CV</span>
                 </a>
               </p>
 

@@ -215,7 +215,7 @@ export default function Music() {
                 className="p-6 text-white/70 text-base leading-relaxed space-y-8 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
               >
                 <Section
-                  title="Jazz"
+                  title="Jazz🎷"
                   intro="I have been performing jazz for several years, playing piano and collaborating in ensembles. My experience spans improvisation, composition, and live performances."
                   videos={jazzVideos}
                   gallery={jazzGallery}

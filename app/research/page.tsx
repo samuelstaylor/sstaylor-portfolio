@@ -17,55 +17,55 @@ export default function Research() {
       text: "Computational Nanoscience",
       color: "text-emerald-400",
       glow: "#34D399",
-      url: "",
+      url: "https://www.nature.com/subjects/computational-nanotechnology",
     },
     {
       text: "Non-Adiabatic Dynamics",
       color: "text-cyan-400",
       glow: "#22D3EE",
-      url: "",
+      url: "https://doi.org/10.1038/s42254-021-00306-5",
     },
     {
       text: "Light-Matter Interactions",
       color: "text-violet-400",
       glow: "#A78BFA",
-      url: "",
+      url: "https://doi.org/10.1038/s42254-021-00306-5",
     },
     {
       text: "Quantum Materials",
       color: "text-pink-400",
       glow: "#F472B6",
-      url: "",
+      url: "https://en.wikipedia.org/wiki/Quantum_materials",
     },
     {
       text: "First Principles Simulations",
       color: "text-orange-400",
       glow: "#FB923C",
-      url: "",
+      url: "https://en.wikipedia.org/wiki/Ab_initio_quantum_chemistry_methods",
     },
     {
       text: "Material / Molecular Modeling",
       color: "text-indigo-400",
       glow: "#818CF8",
-      url: "",
+      url: "https://iopscience.iop.org/journal/0965-0393",
     },
     {
       text: "Scientific Visualization",
       color: "text-emerald-400",
       glow: "#34D399",
-      url: "",
+      url: "https://en.wikipedia.org/wiki/Scientific_visualization",
     },
     {
       text: "Machine Learning",
       color: "text-cyan-400",
       glow: "#22D3EE",
-      url: "",
+      url: "https://en.wikipedia.org/wiki/Machine_learning",
     },
     {
       text: "High-Performance Computing",
       color: "text-violet-400",
       glow: "#A78BFA",
-      url: "",
+      url: "https://en.wikipedia.org/wiki/High-performance_computing",
     },
   ];
 
@@ -90,7 +90,7 @@ export default function Research() {
         }}
         className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-transparent"
       >
-        {/* Frosted glass overlay with delayed fade-in */}
+        {/* Frosted glass overlay */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -127,7 +127,7 @@ export default function Research() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="p-6 text-white/70 text-base leading-relaxed space-y-6 max-h-[70vh] overflow-y-auto scrollbar-theme relative z-10"
             >
-              {/* Publications Section */}
+              {/* Publications */}
               <h3 className="text-white font-semibold text-2xl">
                 Publications
               </h3>
@@ -135,54 +135,54 @@ export default function Research() {
                 For the most updated list of my publications, please visit the
                 links below:
               </p>
-              <div className="flex flex-col space-y-2">
+
+              <div className="flex flex-col space-y-3">
+                {/* Google Scholar */}
                 <a
                   href="https://scholar.google.com/citations?user=69Gy3HIAAAAJ&hl=en"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-2 text-emerald-300 hover:text-emerald-200 transition-colors duration-300"
+                  className="inline-flex items-center space-x-3 text-lg text-blue-300 underline underline-offset-4 decoration-blue-300/70 font-medium tracking-wide transition-all duration-300 hover:text-blue-200 hover:decoration-blue-200 hover:drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"
                 >
                   <Image
                     src="/images/logos/google-scholar.png"
                     alt="Google Scholar"
-                    width={24}
-                    height={24}
+                    width={26}
+                    height={26}
                     className="object-contain"
                   />
-                  <span className="underline decoration-emerald-300/70 font-medium tracking-wide">
-                    Google Scholar
-                  </span>
+                  <span>Google Scholar</span>
                 </a>
+
+                {/* arXiv */}
                 <a
                   href="https://arxiv.org/a/taylor_s_1.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-2 text-red-300 hover:text-red-200 transition-colors duration-300"
+                  className="inline-flex items-center space-x-3 text-lg text-red-300 underline underline-offset-4 decoration-red-300/70 font-medium tracking-wide transition-all duration-300 hover:text-red-200 hover:decoration-red-200 hover:drop-shadow-[0_0_10px_rgba(248,113,113,0.6)]"
                 >
                   <Image
                     src="/images/logos/arxiv.png"
                     alt="arXiv"
-                    width={24}
-                    height={24}
+                    width={26}
+                    height={26}
                     className="object-contain"
                   />
-                  <span className="underline decoration-red-300/70 font-medium tracking-wide">
-                    arXiv
-                  </span>
+                  <span>arXiv</span>
                 </a>
               </div>
 
-              {/* Keywords / Research Interests */}
+              {/* Research Interests */}
               <h3 className="text-white font-semibold text-2xl mt-4">
                 Research Interests
               </h3>
+
               <div className="flex flex-wrap gap-3">
                 {researchKeywords.map((keyword) => (
                   <KeywordPill key={keyword.text} {...keyword} />
                 ))}
               </div>
 
-              {/* Research Description */}
               <p>
                 I specialize in computational nanoscience, non-adiabatic
                 dynamics, light-matter interactions, and high-fidelity 3D

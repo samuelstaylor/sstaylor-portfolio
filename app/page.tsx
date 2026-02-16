@@ -2,44 +2,45 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import Link from "next/link"; // <- add this at the top of your file
 
 export default function Home() {
   const keywords = [
     {
-      text: "Computational Nanoscience",
+      text: "Computational Quantum Physicist",
       color: "text-emerald-400",
       glow: "#34D399",
       url: "https://www.nature.com/subjects/computational-nanotechnology",
     },
     {
-      text: "Non-Adiabatic Dynamics",
+      text: "Musician & Multi-instrumentalist",
       color: "text-cyan-400",
       glow: "#22D3EE",
-      url: "https://doi.org/10.1063/1.4757762",
+      url: "/music/",
     },
     {
-      text: "Light-Matter Interactions",
+      text: "Scientific Software Engineer",
       color: "text-violet-400",
       glow: "#A78BFA",
-      url: "https://doi.org/10.1038/s42254-021-00306-5",
+      url: "https://en.wikipedia.org/wiki/Software_engineering",
     },
     {
-      text: "Quantum Materials",
+      text: "3D visualizer",
       color: "text-indigo-400",
       glow: "#818CF8",
-      url: "https://en.wikipedia.org/wiki/Quantum_materials",
+      url: "https://en.wikipedia.org/wiki/Scientific_visualization",
     },
     {
-      text: "Ab initio Simulations",
+      text: "Composer & Arranger",
       color: "text-pink-400",
       glow: "#F472B6",
-      url: "https://en.wikipedia.org/wiki/Ab_initio_quantum_chemistry_methods",
+      url: "/music",
     },
     {
-      text: "3D Scientific Visualization",
+      text: "Ph.D. Researcher",
       color: "text-orange-400",
       glow: "#FB923C",
-      url: "https://en.wikipedia.org/wiki/Scientific_visualization",
+      url: "https://galligroup.uchicago.edu/People/staylor.php",
     },
   ];
 
@@ -78,7 +79,23 @@ export default function Home() {
           {keywords.map((keyword) => {
             const [hover, setHover] = useState(false);
 
-            return (
+            // Check if the URL is internal (starts with "/")
+            const isInternal = keyword.url.startsWith("/");
+
+            return isInternal ? (
+              <Link key={keyword.text} href={keyword.url} passHref>
+                <span
+                  className={`px-3 py-1 rounded-full bg-white/10 text-sm font-medium transition-all duration-300 ease-out hover:scale-105 ${keyword.color} cursor-pointer`}
+                  style={{
+                    boxShadow: hover ? `0 0 15px ${keyword.glow}` : "none",
+                  }}
+                  onMouseEnter={() => setHover(true)}
+                  onMouseLeave={() => setHover(false)}
+                >
+                  {keyword.text}
+                </span>
+              </Link>
+            ) : (
               <a
                 key={keyword.text}
                 href={keyword.url}
@@ -100,11 +117,11 @@ export default function Home() {
         {/* Short bio */}
         <p className="mt-6 text-white/70 text-lg leading-relaxed">
           Welcome! I am a Ph.D. student in Quantum Science and Engineering at
-          the University of Chicago, specializing in computational nanoscience,
-          excited-state dynamics, and high-fidelity 3D visualizations. My
-          research combines first-principles simulations, TDDFT, and scientific
-          computing to explore quantum materials, light–matter interactions, and
-          molecular fragmentation.
+          the University of Chicago, specializing in First-principles materials
+          simulations, excited-state dynamics, and high-fidelity 3D
+          visualizations. My research combines first-principles simulations,
+          TDDFT, and scientific computing to explore quantum materials,
+          light–matter interactions, and molecular fragmentation.
         </p>
       </motion.div>
     </div>
